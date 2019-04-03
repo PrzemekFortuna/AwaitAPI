@@ -1,0 +1,24 @@
+{
+  "name": "awaitapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrzemekFortuna/AwaitAPI.git"
+  },
+  "author": "Przemyslaw Fortuna 210176",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PrzemekFortuna/AwaitAPI/issues"
+  },
+  "homepage": "https://github.com/PrzemekFortuna/AwaitAPI#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.4.21",
+    "rxjs": "^6.4.0"
+  }
+}
