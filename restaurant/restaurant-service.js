@@ -1,8 +1,11 @@
 const Restaurant = require('./restaurant');
+const hashService = require('../utils/hash-service');
 
 exports.createRestaurant = (restaurant) => {
     return new Promise(async (resolve, reject) => {
         try {
+            var hashedPassword = await hashService.hash(restaurant.password);
+            restaurant.password = hashedPassword;
             var newRestarurant = await Restaurant.create(restaurant);
             resolve(newRestarurant);
         } catch(error) {
@@ -12,6 +15,7 @@ exports.createRestaurant = (restaurant) => {
 }
 
 exports.getRestaurant = (id) => {
+    //TODO: return DTO
     return new Promise(async (resolve, reject) => {
         try {
             var restaurant = await Restaurant.findById(id);
@@ -23,6 +27,7 @@ exports.getRestaurant = (id) => {
 }
 
 exports.getAllRestaurantsFromLocation = (locId) => {
+    //TODO: return DTOs
     return new Promise(async (resolve, reject) => {
         try {
             let restaurants = await Restaurant.find({ location: locId });
