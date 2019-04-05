@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/PrzemekFortuna/AwaitAPI#readme",
   "dependencies": {
+    "bcrypt": "^3.0.5",
     "express": "^4.16.4",
     "mongoose": "^5.4.21",
     "rxjs": "^6.4.0"
