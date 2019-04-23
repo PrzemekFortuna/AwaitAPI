@@ -1,6 +1,9 @@
 var mongoose = require('mongoose');
+const config = require('config');
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
-mongoose.connect('mongodb://localhost:27017/splitlocal', {useNewUrlParser: true})
-.then(() => { console.log('Connected to MongoDB!')})
-.catch(() => { console.log('Failed to connect to MongoDB!')});
+
+let db = config.get('db');
+mongoose.connect(db, {useNewUrlParser: true})
+.then(() => { console.log(`Connected to MongoDB(${db})!`)})
+.catch(() => { console.log(`Failed to connect to MongoDB(${db}!`)});
