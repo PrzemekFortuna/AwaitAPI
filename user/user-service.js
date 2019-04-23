@@ -1,12 +1,18 @@
 const User = require('./user');
+const hashService = require('../utils/hash-service');
 
 exports.addUser = (user) => {
     return new Promise(async (resolve, reject) => {
         try {
+            if (user.password) {
+                let hash = await hashService.hash(user.password);
+                user.password = hash;
+            }
+
             let newUser = await User.create(user);
             resolve(newUser);
         } catch (error) {
-            reject(error);
+            reject(error.message);
         }
     })
 }

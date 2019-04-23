@@ -10,7 +10,7 @@ describe('/users', () => {
         server = require('../server');
     });
     afterEach(() => {
-        User.collection.deleteMany({});
+        //User.collection.deleteMany({});
         server.close();
     });
 
@@ -36,24 +36,24 @@ describe('/users', () => {
 
             let res = await request(server).post('/users/register').send(user);
 
-            expect(res.status).toEqual(400);
-            expect(res.body).toEqual({ error: 'Bad request' });
+            expect(res.status).toEqual(500);
+            expect(res.body.error.includes('`role` is required')).toBeTruthy();
 
             user.role = roles.restaurant;
             user.email = undefined;
 
             res = await request(server).post('/users/register').send(user);
 
-            expect(res.status).toEqual(400);
-            expect(res.body).toEqual({ error: 'Bad request' });
+            expect(res.status).toEqual(500);
+            expect(res.body.error.includes('`email` is required')).toBeTruthy();
 
             user.email = 'user@user.com';
             user.password = undefined;
 
             res = await request(server).post('/users/register').send(user);
 
-            expect(res.status).toEqual(400);
-            expect(res.body).toEqual({ error: 'Bad request' });
+            expect(res.status).toEqual(500);
+            expect(res.body.error.includes('`password` is required')).toBeTruthy();
         });
     });
 

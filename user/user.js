@@ -8,11 +8,11 @@ let user = Schema({
     lastname: { type: Schema.Types.String },
     role: {
         type: Schema.Types.String,
-        require: true,
+        required: true,
         enum: [roles.guest, roles.employee, roles.restaurant]
     },
-    email: { type: Schema.Types.String, require: true },
-    password: { type: Schema.Types.String, require: true }
+    email: { type: Schema.Types.String, required: true },
+    password: { type: Schema.Types.String, required: true }
 });
 
 module.exports = mognoose.model('User', user);

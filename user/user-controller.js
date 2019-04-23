@@ -9,9 +9,7 @@ router.use(bodyParser.json());
 router.post('/register', async (req, res) => {
     try {
         let user = req.body;
-        if (!user.hasOwnProperty('email') || !user.hasOwnProperty('password') || !user.hasOwnProperty('role'))
-            return res.status(400).send({ error: 'Bad request' });
-
+        
         let newUser = await userService.addUser(user);
         newUser.password = undefined;
         res.status(201).send(newUser);
