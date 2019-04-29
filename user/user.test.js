@@ -10,7 +10,7 @@ describe('/users', () => {
         server = require('../server');
     });
     afterEach(() => {
-        //User.collection.deleteMany({});
+        User.collection.deleteMany({});
         server.close();
     });
 

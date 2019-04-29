@@ -1,14 +1,22 @@
 const Restaurant = require('./restaurant');
 const hashService = require('../utils/hash-service');
+const userService = require('../user/user-service');
+const locationService = require('../location/location-service');
 
 exports.createRestaurant = (restaurant) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let location = await locationService.addLocation(restaurant);
+            restaurant.role = 'restaurant';
+            let user = await userService.addUser(restaurant);
+
             var hashedPassword = await hashService.hash(restaurant.password);
             restaurant.password = hashedPassword;
-            var newRestarurant = await Restaurant.create(restaurant);
+
+            let restaurantDTO = { name: restaurant.name, user: user._id, location: location._id };
+            var newRestarurant = await Restaurant.create(restaurantDTO);
             resolve(newRestarurant);
-        } catch(error) {
+        } catch (error) {
             reject(error);
         }
     });
@@ -20,7 +28,7 @@ exports.getRestaurant = (id) => {
         try {
             var restaurant = await Restaurant.findById(id);
             resolve(restaurant);
-        } catch(error) {
+        } catch (error) {
             reject(error);
         }
     });
@@ -32,20 +40,20 @@ exports.getAllRestaurantsFromLocation = (locId) => {
         try {
             let restaurants = await Restaurant.find({ location: locId });
             resolve(restaurants);
-        } catch(error) {
+        } catch (error) {
             reject(error);
         }
     });
 }
- exports.deleteRestaurant = (id) => {
-     return new Promise(async (resolve, reject) => {
+exports.deleteRestaurant = (id) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let deletedRestaurant = await Restaurant.findByIdAndDelete(id);
             resolve(deletedRestaurant);
-        } catch(error) {
+        } catch (error) {
             reject(error);
         }
-     });
- }
+    });
+}
 
 
