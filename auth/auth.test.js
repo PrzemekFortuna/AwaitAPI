@@ -15,16 +15,44 @@ describe('/auth', () => {
 
     describe('POST /auth/login', () => {
         it('should return 200 and jwt when correct credentials provided', async () => {
-            let newUser = { email: 'test@test.pl', password: 'password', role: 'restaurant' };
-            let res = await request(server).post('/users/register').send(newUser);
-
-            expect(res.status).toBe(201);
+            let newUser = await createNewUser();
 
             let reqBody = { email: newUser.email, password: newUser.password };
-            res = await request(server).post('/auth/login').query(reqBody);
+            let res = await request(server).post('/auth/login').query(reqBody);
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('jwt');
         });
+
+        it('should return 401 when provided wrong password', async () => {
+            let newUser = await createNewUser();
+            let reqBody = {email: newUser.email, password: 'wrongpassword'};
+            let res = await request(server).post('/auth/login').query(reqBody);
+
+            expect(res.status).toBe(401);
+        });
+
+        it('should return 404 when provided wrong email', async () => {
+            let newUser = await createNewUser();
+            let reqBody = { email: 'wrongemail@test.pl', password: 'password'};
+            let res = await request(server).post('/auth/login').query(reqBody);
+            
+            expect(res.status).toBe(404);
+        });
     });
 });
+
+let createNewUser = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let newUser = { email: 'test@test.pl', password: 'password', role: 'restaurant' };
+            let res = await request(server).post('/users/register').send(newUser);
+
+            expect(res.status).toBe(201);
+            resolve(newUser);
+
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
