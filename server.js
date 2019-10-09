@@ -12,6 +12,9 @@ app.use('/restaurants', restaurantsController);
 const userController = require('./user/user-controller');
 app.use('/users', userController);
 
+const authController = require('./auth/auth-controller');
+app.use('/auth', authController);
+
 var server = app.listen(port, () => {
     console.log('Server is running on port ', port);
 });
