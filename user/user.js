@@ -9,7 +9,7 @@ let user = Schema({
     role: {
         type: Schema.Types.String,
         required: true,
-        enum: [roles.guest, roles.employee, roles.restaurant]
+        enum: [roles.customer, roles.restaurant]
     },
     email: { type: Schema.Types.String, required: true },
     password: { type: Schema.Types.String, required: true }

@@ -27,3 +27,14 @@ exports.getUser = (id) => {
         }
     });
 }
+
+exports.getUserByEmail = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await User.findOne({ email: email});
+            resolve(user);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}

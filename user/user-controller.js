@@ -9,7 +9,7 @@ router.use(bodyParser.json());
 router.post('/register', async (req, res) => {
     try {
         let user = req.body;
-        
+
         let newUser = await userService.addUser(user);
         newUser.password = undefined;
         res.status(201).send(newUser);

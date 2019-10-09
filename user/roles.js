@@ -1,3 +1,3 @@
-const roles = Object.freeze({ restaurant: 'restaurant', employee: 'employee', guest: 'guest' });
+const roles = Object.freeze({ restaurant: 'restaurant', customer: 'customer' });
 
 module.exports = roles;
