@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const userService = require('./user-service');
+const authService = require('../auth/auth-service');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
