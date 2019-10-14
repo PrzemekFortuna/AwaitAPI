@@ -32,12 +32,12 @@ describe('/auth', () => {
             expect(res.status).toBe(401);
         });
 
-        it('should return 404 when provided wrong email', async () => {
+        it('should return 401 when provided wrong email', async () => {
             let newUser = await createNewUser();
             let reqBody = { email: 'wrongemail@test.pl', password: 'password'};
             let res = await request(server).post('/auth/login').query(reqBody);
             
-            expect(res.status).toBe(404);
+            expect(res.status).toBe(401);
         });
     });
 });

@@ -11,13 +11,13 @@ exports.login = (email, password) => {
         if (user != null) {
             let isLoginSuccessful = await hashService.compare(password, user.password);
             if (isLoginSuccessful) {
-                let token = await jwt.sign({ email: user.email }, config.secret);
+                let token = await jwt.sign({ email: user.email, role: user.role }, config.secret);
                 resolve({ jwt: token });
             } else {
                 reject({ code: 401, message: "Login failed!" });
             }
         } else {
-            reject({ code: 404, message: "User not found!" });
+            reject({ code: 401, message: "Login failed!" });
         }
     });
 }
