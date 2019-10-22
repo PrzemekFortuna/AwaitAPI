@@ -13,7 +13,7 @@ let swaggerOptions = {
         },
         servers: ["http://localhost:3000"]
     },
-    apis: ["server.js"]
+    apis: ["server.js", "order/order-controller.js"]
 };
 
 
