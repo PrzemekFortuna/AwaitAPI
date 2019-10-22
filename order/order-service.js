@@ -40,6 +40,9 @@ exports.connectUser = (id, userId) => {
             }
 
             let order = await Order.findById(id);
+            if (order == null) {
+                reject({ code: 404, error: 'Order not found!' });
+            }
 
             order.user = user._id;
 

@@ -48,7 +48,7 @@ describe('/orders', () => {
         it('should change order status', async () => {
             let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
             var order = await Order.create(orderDTO);
-            
+
             let newStatus = { status: statuses.inprogress };
             let res = await request(server).patch('/orders/' + order._id).send(newStatus);
 
@@ -74,9 +74,18 @@ describe('/orders', () => {
             let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
             let user = await User.create(userDTO);
 
-            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: user._id });            
+            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: user._id });
 
             expect(res.status).toBe(204);
+        });
+
+        it('should return 404 when order not found', async () => {
+            let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
+            let user = await User.create(userDTO);
+            let res = await request(server).patch('/orders/connect/' + mongoose.Types.ObjectId()).send({ user: user._id });
+
+            expect(res.status).toBe(404);
+            expect(res.body).toHaveProperty('error');
         });
 
         it('should return 400 when user is not a customer', async () => {
