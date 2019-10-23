@@ -18,7 +18,7 @@ describe('/auth', () => {
             let newUser = await createNewUser();
 
             let reqBody = { email: newUser.email, password: newUser.password };
-            let res = await request(server).post('/auth/login').query(reqBody);
+            let res = await request(server).post('/auth/login').send(reqBody);
 
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty('jwt');
@@ -27,7 +27,7 @@ describe('/auth', () => {
         it('should return 401 when provided wrong password', async () => {
             let newUser = await createNewUser();
             let reqBody = {email: newUser.email, password: 'wrongpassword'};
-            let res = await request(server).post('/auth/login').query(reqBody);
+            let res = await request(server).post('/auth/login').send(reqBody);
 
             expect(res.status).toBe(401);
         });
@@ -35,7 +35,7 @@ describe('/auth', () => {
         it('should return 401 when provided wrong email', async () => {
             let newUser = await createNewUser();
             let reqBody = { email: 'wrongemail@test.pl', password: 'password'};
-            let res = await request(server).post('/auth/login').query(reqBody);
+            let res = await request(server).post('/auth/login').send(reqBody);
             
             expect(res.status).toBe(401);
         });

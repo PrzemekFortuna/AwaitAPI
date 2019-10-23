@@ -3,15 +3,17 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const userService = require('./user-service');
 const authService = require('../auth/auth-service');
+const roles = require('./roles');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 router.post('/register', async (req, res) => {
     try {
-        let user = req.body;
+        let userDTO = req.body;
+        userDTO.role = roles.customer;
 
-        let newUser = await userService.addUser(user);
+        let newUser = await userService.addUser(userDTO);
         newUser.password = undefined;
         res.status(201).send(newUser);
 

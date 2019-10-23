@@ -8,8 +8,8 @@ router.use(bodyParser.json());
 
 router.post('/login', async (req, res) => {
     try {
-        let email = req.query.email;
-        let password = req.query.password;
+        let email = req.body.email;
+        let password = req.body.password;
 
         let result = await authService.login(email, password);
 

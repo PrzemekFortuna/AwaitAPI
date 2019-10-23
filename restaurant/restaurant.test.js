@@ -16,10 +16,10 @@ describe('/restaurants', () => {
         server.close();
     });
 
-    describe('POST /', () => {
+    describe('POST /register', () => {
         it('should return 201 when restaurant is created properly', async () => {
             let reqBody = { email: 'user@gmail.com', password: 'password1', name: 'RestaurantName', city: 'Lodz', zip:'90057', address: 'al. Politechniki 112' };
-            let res = await request(server).post('/restaurants/').send(reqBody);
+            let res = await request(server).post('/restaurants/register').send(reqBody);
 
             expect(res.status).toBe(201);
             

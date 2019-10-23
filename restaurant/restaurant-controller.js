@@ -2,13 +2,17 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const restaurantService = require('./restaurant-service');
+const roles = require('../user/roles');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-router.post('/', async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
-        let createdRestaurant = await restaurantService.createRestaurant(req.body);
+        let restaurantDTO = req.body;
+        restaurantDTO.role = roles.restaurant;
+        
+        let createdRestaurant = await restaurantService.createRestaurant(restaurantDTO);
         res.status(201).send(createdRestaurant);
     } catch (error) {
         res.status(500).send(error);
