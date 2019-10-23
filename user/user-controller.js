@@ -18,6 +18,8 @@ router.post('/register', async (req, res) => {
         res.status(201).send(newUser);
 
     } catch (error) {
+        if(error.includes('is required'))
+            return res.status(400).send({ error: error });
         res.status(500).send({ error: error });
     }
 });

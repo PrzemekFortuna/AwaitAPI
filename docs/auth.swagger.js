@@ -1,7 +1,7 @@
 /**
  * @swagger
  * 
- * /login:
+ * /auth/login:
  *  post:
  *      description: Logins user. Generates JWT token on successful login
  *      produces:

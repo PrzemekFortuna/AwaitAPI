@@ -13,7 +13,7 @@ let swaggerOptions = {
         },
         servers: ["http://localhost:3000"]
     },
-    apis: ["server.js", "docs/order.swagger.js", "docs/auth.swagger.js"]
+    apis: ["server.js", "docs/order.swagger.js", "docs/auth.swagger.js", "docs/user.swagger.js"]
 };
 
 

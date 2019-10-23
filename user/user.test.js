@@ -37,7 +37,7 @@ describe('/users', () => {
 
             res = await request(server).post('/users/register').send(user);
 
-            expect(res.status).toEqual(500);
+            expect(res.status).toEqual(400);
             expect(res.body.error.includes('`email` is required')).toBeTruthy();
 
             user.email = 'user@user.com';
@@ -45,7 +45,7 @@ describe('/users', () => {
 
             res = await request(server).post('/users/register').send(user);
 
-            expect(res.status).toEqual(500);
+            expect(res.status).toEqual(400);
             expect(res.body.error.includes('`password` is required')).toBeTruthy();
         });
     });
