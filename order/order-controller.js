@@ -21,43 +21,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * 
- * /orders/:id:
- *  patch:
- *      description: Updates order status
- *      produces:
- *          - application/json
- *      tags:
- *          - Orders
- *      parameters:
- *          - name: id
- *            description: Id of order to update
- *            in: path
- *            required: true
- *            type: string
- *          - name: status
- *            description: New status
- *            in: body
- *            required: true
- *            schema:
- *              type: object
- *              properties:
- *                  status:
- *                      type: integer
- *                      format: int32
- *                      example: 2
- *                      minimum: 2
- *                      maximum: 4
- *      responses:
- *          200:
- *              description: Updated successfuly
- *          400:
- *              description: Status out of allowed range
- *            
- *      
- */
 router.patch('/:id', async (req, res) => {
     try {
         if (Object.values(statuses).indexOf(req.body.status) == -1)
