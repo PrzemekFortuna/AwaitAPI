@@ -6,6 +6,7 @@ let Restaurant = require('../restaurant/restaurant');
 let statuses = require('./order-statuses');
 let User = require('../user/user');
 const roles = require('../user/roles');
+let Numb = require('../number-generator/number');
 
 let server;
 let restaurant;
@@ -20,12 +21,13 @@ describe('/orders', () => {
         Order.collection.deleteMany({});
         Restaurant.collection.deleteMany({});
         User.collection.deleteMany({});
+        Numb.collection.deleteMany({});
         server.close();
     });
 
     describe('POST /order', () => {
         it('should return 201 when new order is created. It should contain property status with value "new"', async () => {
-            let order = { number: 11, note: 'order note', restaurant: restaurant._id };
+            let order = { note: 'order note', restaurant: restaurant._id };
 
             let res = await request(server).post('/orders').send(order);
 
@@ -33,14 +35,34 @@ describe('/orders', () => {
 
             let newOrder = res.body;
 
-            expect(newOrder).toHaveProperty('number', order.number);
+            expect(newOrder).toHaveProperty('number', 1);
             expect(newOrder).toHaveProperty('note', order.note);
             expect(newOrder).toHaveProperty('restaurant', restaurant._id.toString());
             expect(newOrder).toHaveProperty('status', statuses.new);
         });
 
         it('should return 400 when no restaurant id is provided', async () => {
-            //TODO
+            expect(1).toBe(2);
+        });
+
+        it('should generate correct order numbers', async () => {
+            let order = { note: 'order note', restaurant: restaurant._id };
+
+            let res = await request(server).post('/orders').send(order);
+
+            expect(res.status).toBe(201);
+
+            let newOrder = res.body;
+
+            expect(newOrder).toHaveProperty('number', 1);
+
+            res = await request(server).post('/orders').send(order);
+
+            expect(res.status).toBe(201);
+
+            newOrder = res.body;
+
+            expect(newOrder).toHaveProperty('number', 2);
         });
     });
 

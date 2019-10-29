@@ -2,11 +2,14 @@ const Order = require('./order');
 const statuses = require('./order-statuses');
 const userService = require('../user/user-service');
 const roles = require('../user/roles');
+const numberService = require('../number-generator/number-generator-service');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
         try {
             order.status = statuses.new;
+            let number = await numberService.getNumber(order.restaurant);
+            order.number = number.number;
 
             let newOrder = await Order.create(order);
 
