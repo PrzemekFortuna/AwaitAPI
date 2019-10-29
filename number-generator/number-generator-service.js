@@ -1,19 +1,28 @@
-const Number = require('./number');
+const Numb = require('./number');
+const mongoose = require('mongoose');
 
-exports.getNumber = (id) => {
+exports.getNumber = (restaurantId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let number = await Number.findById(id);
+            let searchDTO = { restaurant: mongoose.Schema.Types.ObjectId.fromString(id) };
+            
+            let number = await Numb.findOne(searchDTO);
+
             if (number == null) {
                 number = await createNumber();
+                return resolve(number);
             }
-            
-            let shouldReset = await shouldResetNumber(id);
-            if (shouldReset)
-                resetNumber(id);
 
+            let shouldReset = await shouldResetNumber(number);
+            if (shouldReset) {
+                resetNumber(restaurantId);
+                number.number = 2;
+                await number.save();
+                return resolve(1);
+            }
 
-            resolve(number.number);
+            await incrementNumber(restaurantId);
+            return resolve(number);
         } catch (error) {
             reject(error);
         }
@@ -24,7 +33,7 @@ function createNumber(restaurantId) {
     return new Promise(async (resolve, reject) => {
         try {
             let numberDTO = { number: 1, date: new Date(), restaurant: restaurantId };
-            let number = await Number.create(numberDTO);
+            let number = await Numb.create(numberDTO);
 
             resolve(number);
         } catch (error) {
@@ -36,8 +45,9 @@ function createNumber(restaurantId) {
 function resetNumber(id) {
     return new Promise(async (resolve, reject) => {
         try {
-            let number = await Number.findById(id);
+            let number = await Numb.findById(id);
             number.number = 1;
+            number.date = new Date();
             await number.save();
 
             resolve();
@@ -47,10 +57,9 @@ function resetNumber(id) {
     });
 }
 
-function shouldResetNumber(id) {
+function shouldResetNumber(number) {
     return new Promise(async (resolve, reject) => {
         try {
-            let number = await Number.findById(id);
             if (number.date.getDate() !== new Date().getDate()) {
                 resolve(true);
             }
@@ -58,6 +67,16 @@ function shouldResetNumber(id) {
             resolve(false);
         } catch (error) {
             reject(error);
+        }
+    });
+}
+
+function incrementNumber(id) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+        } catch (error) {
+
         }
     });
 }

@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const orderService = require('./order-service');
 const statuses = require('./order-statuses');
+const numberService = require('../number-generator/number-generator-service');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
@@ -43,6 +44,18 @@ router.patch('/connect/:id', async (req, res) => {
         res.status(204).send({});
     } catch (err) {
         res.status(err.code).send(err);
+    }
+});
+
+router.get('/number/:id', async (req, res) => {
+    try {
+        let id = req.params.id;
+
+        let num = await numberService.getNumber(id);
+
+        return res.status(200).send({ number: num });
+    } catch (error) {
+        return res.status(500).send(error);
     }
 });
 

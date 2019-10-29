@@ -1,3 +1,3 @@
 {
-    "db": "mongodb://localhost:27017/await"
+    "db": "mongodb+srv://await:ikG1V4fio1XYBKdv@await-wdlon.mongodb.net/test?retryWrites=true&w=majority"
 }

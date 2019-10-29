@@ -11,7 +11,7 @@ let swaggerOptions = {
             title: 'Await API',
             description: 'Await REST API documentation'
         },
-        servers: ["http://localhost:3000"]
+        servers: ["http://await.herokuapp.com/"]
     },
     apis: ["docs/order.swagger.js", "docs/auth.swagger.js", "docs/user.swagger.js", "docs/restaurant.swagger.js"]
 };
