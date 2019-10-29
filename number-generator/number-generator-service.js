@@ -4,24 +4,25 @@ const mongoose = require('mongoose');
 exports.getNumber = (restaurantId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let searchDTO = { restaurant: mongoose.Schema.Types.ObjectId.fromString(id) };
-            
+            let searchDTO = { restaurant: restaurantId };
+
             let number = await Numb.findOne(searchDTO);
 
             if (number == null) {
-                number = await createNumber();
+                number = await createNumber(restaurantId);
+
                 return resolve(number);
             }
 
             let shouldReset = await shouldResetNumber(number);
             if (shouldReset) {
-                resetNumber(restaurantId);
-                number.number = 2;
-                await number.save();
-                return resolve(1);
+                number = resetNumber(restaurantId);
+                
+                return resolve(number);
             }
 
-            await incrementNumber(restaurantId);
+            number = await incrementNumber(restaurantId);
+            
             return resolve(number);
         } catch (error) {
             reject(error);
@@ -34,7 +35,7 @@ function createNumber(restaurantId) {
         try {
             let numberDTO = { number: 1, date: new Date(), restaurant: restaurantId };
             let number = await Numb.create(numberDTO);
-
+            
             resolve(number);
         } catch (error) {
             reject(error);
@@ -42,15 +43,15 @@ function createNumber(restaurantId) {
     });
 }
 
-function resetNumber(id) {
+function resetNumber(restaurantId) {
     return new Promise(async (resolve, reject) => {
         try {
-            let number = await Numb.findById(id);
+            let number = await Numb.findOne({ restaurant: restaurantId });
             number.number = 1;
             number.date = new Date();
             await number.save();
 
-            resolve();
+            resolve(number);
         } catch (error) {
             reject(error);
         }
@@ -71,12 +72,17 @@ function shouldResetNumber(number) {
     });
 }
 
-function incrementNumber(id) {
+function incrementNumber(restaurantId) {
     return new Promise(async (resolve, reject) => {
         try {
-            
-        } catch (error) {
+            let numb = await Numb.findOne({ restaurant: restaurantId });
+            numb.number += 1;
 
+            numb = await numb.save();
+
+            resolve(numb);
+        } catch (error) {
+            reject(error);
         }
     });
 }
