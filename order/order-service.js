@@ -7,7 +7,7 @@ const numberService = require('../number-generator/number-generator-service');
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
         try {
-            order.status = statuses.new;
+            order.status = statuses.inprogress;
             let number = await numberService.getNumber(order.restaurant);
             order.number = number.number;
 

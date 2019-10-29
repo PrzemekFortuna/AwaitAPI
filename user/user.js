@@ -11,6 +11,7 @@ let user = Schema({
         required: true,
         enum: [roles.customer, roles.restaurant]
     },
+    token: { type: Schema.Types.String },
     email: { type: Schema.Types.String, required: true },
     password: { type: Schema.Types.String, required: true }
 });

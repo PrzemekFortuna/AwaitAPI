@@ -38,7 +38,7 @@ describe('/orders', () => {
             expect(newOrder).toHaveProperty('number', 1);
             expect(newOrder).toHaveProperty('note', order.note);
             expect(newOrder).toHaveProperty('restaurant', restaurant._id.toString());
-            expect(newOrder).toHaveProperty('status', statuses.new);
+            expect(newOrder).toHaveProperty('status', statuses.inprogress);
         });
 
         it('should return 400 when no restaurant id is provided', async () => {

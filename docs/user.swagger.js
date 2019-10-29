@@ -49,7 +49,7 @@
  *          - Users
  *      parameters:
  *          - name: id
- *            description: Id of order to update
+ *            description: Id of user to get
  *            in: path
  *            required: true
  *            type: string
@@ -58,4 +58,37 @@
  *              description: User exists
  *          404:
  *              description: User doesn't exist
+ */
+
+ /**
+ * @swagger
+ * 
+ * /users/:id:
+ *  patch:
+ *      description: Updates token of user with given ID
+ *      produces:
+ *          - application/json
+ *      tags:
+ *          - Users
+ *      parameters:
+ *          - name: id
+ *            description: Id of user to update
+ *            in: path
+ *            required: true
+ *            type: string
+ *          - name: token
+ *            description: New value of token
+ *            in: body
+ *            required: true
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  token:
+ *                      type: string
+ *                      example: asduq@dasda!23$ah
+ *      responses:
+ *          204:
+ *              description: User updated successfuly
+ *          400:
+ *              description: New token cannot be null
  */

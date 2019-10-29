@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
         res.status(201).send(newUser);
 
     } catch (error) {
-        if(error.includes('is required'))
+        if (error.includes('is required'))
             return res.status(400).send({ error: error });
         res.status(500).send({ error: error });
     }
@@ -34,6 +34,18 @@ router.get('/:id', async (req, res) => {
 
         user.password = undefined;
         res.status(200).send(user);
+    } catch (error) {
+        res.status(500).send({ error: error });
+    }
+});
+
+router.patch('/:id', async (req, res) => {
+    try {
+        let id = req.params.id;
+        let token = req.body.token;
+
+        await userService.updateToken(id, token);
+        res.status(204).send();
     } catch (error) {
         res.status(500).send({ error: error });
     }

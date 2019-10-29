@@ -38,3 +38,21 @@ exports.getUserByEmail = (email) => {
         }
     });
 }
+
+exports.updateToken = (id, newToken) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await User.findOneAndUpdate({ _id: id }, { token: newToken });
+
+            if(newToken === null)
+                reject({ code: 400, error: 'New token cannot be null'});
+
+            if(user === null)
+                reject({ code: 404, error: 'User not found' });
+
+            resolve();
+        } catch(error) {
+            reject({ code: 500, error: error });
+        }
+    });
+}

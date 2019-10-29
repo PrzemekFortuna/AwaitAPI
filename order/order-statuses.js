@@ -1,3 +1,3 @@
-const statuses = Object.freeze({ new: 1, inprogress: 2, ready: 3, finalised: 4 });
+const statuses = Object.freeze({ inprogress: 1, ready: 2, finalised: 3, canceled: 4 });
 
 module.exports = statuses;
