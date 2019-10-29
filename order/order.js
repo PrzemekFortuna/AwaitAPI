@@ -7,7 +7,7 @@ let order = mongoose.Schema({
     status: {
         type: Schema.Types.Number,
         require: true,
-        enum: [statuses.new, statuses.inprogress, statuses.ready, statuses.finalised]
+        enum: [statuses.inprogress, statuses.ready, statuses.finalised, statuses.canceled]
     },
     note: { type: Schema.Types.String },
     restaurant: { type: Schema.Types.ObjectId, ref: 'Restaurant', require: true },
