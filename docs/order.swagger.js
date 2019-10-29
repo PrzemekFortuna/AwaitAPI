@@ -3,7 +3,7 @@
  * 
  * /orders:
  *  post:
- *      description: Adds new order with status 'new'
+ *      description: Adds new order with status 'inprogress'
  *      produces:
  *          - application/json
  *      tags:
@@ -16,13 +16,6 @@
  *            schema:
  *              type: object
  *              properties:
- *                  number:
- *                      title: Order number
- *                      type: integer
- *                      format: int32
- *                      required: true
- *                      example: 1
- *                      minimum: 1
  *                  restaurant:
  *                      title: Restaurant ID
  *                      type: string
@@ -43,7 +36,7 @@
  * 
  * /orders/:id:
  *  patch:
- *      description: Updates order status
+ *      description: Updates order status. Available statuses = inprogress -> 1, ready -> 2, finalised -> 3, canceled -> 4.
  *      produces:
  *          - application/json
  *      tags:
