@@ -1,19 +1,14 @@
 const Restaurant = require('./restaurant');
-const hashService = require('../utils/hash-service');
 const userService = require('../user/user-service');
-const locationService = require('../location/location-service');
+const roles = require('../user/roles');
 
 exports.createRestaurant = (restaurant) => {
     return new Promise(async (resolve, reject) => {
-        try {
-            let location = await locationService.addLocation(restaurant);
-            restaurant.role = 'restaurant';
+        try {            
+            restaurant.role = roles.restaurant;
             let user = await userService.addUser(restaurant);
 
-            var hashedPassword = await hashService.hash(restaurant.password);
-            restaurant.password = hashedPassword;
-
-            let restaurantDTO = { name: restaurant.name, user: user._id, location: location._id };
+            let restaurantDTO = { name: restaurant.name, user: user._id, city: restaurant.city, zip: restaurant.zip, address: restaurant.address };
             var newRestarurant = await Restaurant.create(restaurantDTO);
             resolve(newRestarurant);
         } catch (error) {
@@ -34,17 +29,6 @@ exports.getRestaurant = (id) => {
     });
 }
 
-exports.getAllRestaurantsFromLocation = (locId) => {
-    //TODO: return DTOs
-    return new Promise(async (resolve, reject) => {
-        try {
-            let restaurants = await Restaurant.find({ location: locId });
-            resolve(restaurants);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
 exports.deleteRestaurant = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -55,5 +39,3 @@ exports.deleteRestaurant = (id) => {
         }
     });
 }
-
-

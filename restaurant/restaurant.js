@@ -3,7 +3,9 @@ let Schema = mongoose.Schema;
 
 var restaurant = mongoose.Schema({
    name: { type: Schema.Types.String, require: true},   
-   location: {type: Schema.Types.ObjectId, ref:'Location'},
+   city: { type: Schema.Types.String },
+   zip: { type: Schema.Types.String },
+   address: { type: Schema.Types.String },
    user: {type: Schema.Types.ObjectId, ref: 'User'}
 });
 

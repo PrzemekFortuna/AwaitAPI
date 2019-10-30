@@ -28,18 +28,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/location/:id', async (req, res) => {
-    try {
-        let restaurants = await restaurantService.getAllRestaurantsFromLocation(req.params.id);
-        if (restaurants.length == 0)
-            res.status(404).send({ error: 'No restaurants in given location' });
-        else
-            res.status(200).send(restaurants);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
 router.delete('/:id', async (req, res) => {
     try {
         let deletedRest = await restaurantService.deleteRestaurant(req.params.id);

@@ -1,6 +1,5 @@
 const request = require('supertest');
 const Restaurant = require('./restaurant');
-const Location = require('../location/location');
 const User = require('../user/user');
 
 let server;
@@ -11,7 +10,6 @@ describe('/restaurants', () => {
     });
     afterEach(() => {
         Restaurant.collection.deleteMany({});
-        Location.collection.deleteMany({});
         User.collection.deleteMany({});
         server.close();
     });
@@ -25,7 +23,9 @@ describe('/restaurants', () => {
             
             let body = res.body;
             expect(body).toHaveProperty('user');
-            expect(body).toHaveProperty('location');
+            expect(body).toHaveProperty('city', reqBody.city);
+            expect(body).toHaveProperty('zip', reqBody.zip);
+            expect(body).toHaveProperty('address', reqBody.address);
             expect(body).toHaveProperty('name', reqBody.name);
         });
     });
