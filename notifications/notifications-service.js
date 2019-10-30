@@ -1,24 +1,28 @@
-let firebase = require('firebase-admin');
+let FCM = require('fcm-node');
 let key = require('./fcm-key.json');
-
-let admin = firebase.initializeApp({
-    apiKey: key.apiKey
-});
+let fcm = new FCM(key.apiKey);
 
 exports.sendNotification = (token, title, body) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            let payload = {
+            let message = {
+                to: token,
                 notification: {
                     title: title,
                     body: body
                 }
             }
 
-            let response = await admin.messaging().sendToDevice(token, payload);
-
-            resolve(response);
+            fcm.send(message, (err, response) => {
+                if(err) {
+                    console.log(err);
+                    reject();
+                } else {
+                    console.log('Success!');
+                    resolve();
+                }
+            });
         } catch (error) {
             reject({ error: error });
         }

@@ -34,7 +34,7 @@ describe('/orders', () => {
             expect(res.status).toBe(201);
 
             let newOrder = res.body;
-
+            
             expect(newOrder).toHaveProperty('number', 1);
             expect(newOrder).toHaveProperty('note', order.note);
             expect(newOrder).toHaveProperty('restaurant', restaurant._id.toString());
