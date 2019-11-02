@@ -38,6 +38,11 @@ exports.connectUser = (id, userId) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await userService.getUser(userId);
+
+            if(user == null) {
+                reject({ code: 404, error: 'User not found!' });
+            }
+
             if (user.role != roles.customer) {
                 reject({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
             }

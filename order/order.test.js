@@ -42,7 +42,11 @@ describe('/orders', () => {
         });
 
         it('should return 400 when no restaurant id is provided', async () => {
-            expect(1).toBe(2);
+            let order = { note: 'order note' };
+
+            let res = await request(server).post('/orders').send(order);
+
+            expect(res.status).toBe(400);
         });
 
         it('should generate correct order numbers', async () => {
@@ -105,6 +109,16 @@ describe('/orders', () => {
             let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
             let user = await User.create(userDTO);
             let res = await request(server).patch('/orders/connect/' + mongoose.Types.ObjectId()).send({ user: user._id });
+
+            expect(res.status).toBe(404);
+            expect(res.body).toHaveProperty('error');
+        });
+
+        it('should return 404 when user not found', async () => {
+            let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
+            let order = await Order.create(orderDTO);
+            
+            let res = await request(server).patch('/orders/connect/'+order._id).send({ user: mongoose.Types.ObjectId()});
 
             expect(res.status).toBe(404);
             expect(res.body).toHaveProperty('error');
