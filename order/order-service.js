@@ -39,7 +39,7 @@ exports.connectUser = (id, userId) => {
         try {
             let user = await userService.getUser(userId);
             if (user.role != roles.customer) {
-                reject({ code: 400, error: 'Wrong role!' });
+                reject({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
             }
 
             let order = await Order.findById(id);
@@ -48,6 +48,7 @@ exports.connectUser = (id, userId) => {
             }
 
             order.user = user._id;
+            await order.save();
 
             resolve();
         } catch (error) {
