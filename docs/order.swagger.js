@@ -85,7 +85,7 @@
  *            required: true
  *            type: string
  *          - name: status
- *            description: New status
+ *            description: ID of user to connect to order. User must be of role 'customer'
  *            in: body
  *            required: true
  *            schema:
