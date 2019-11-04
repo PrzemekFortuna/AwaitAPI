@@ -28,6 +28,8 @@
  *      responses:
  *          201:
  *              description: Order created
+ *          400:
+ *              descritpion: No restaurant ID provided
  */
 
 
@@ -97,4 +99,8 @@
  *      responses:
  *          204:
  *              description: Connected successfuly
+ *          404:
+ *              description: User/order not found
+ *          400:
+ *              description: Provided user is not of role "customer"
  */
