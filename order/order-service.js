@@ -3,6 +3,7 @@ const statuses = require('./order-statuses');
 const userService = require('../user/user-service');
 const roles = require('../user/roles');
 const numberService = require('../number-generator/number-generator-service');
+const Restaurant = require('../restaurant/restaurant');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
@@ -58,6 +59,18 @@ exports.connectUser = (id, userId) => {
             resolve();
         } catch (error) {
             reject({ code: 500, error: error });
+        }
+    });
+}
+
+exports.getOrdersForRestaurant = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let restaurant = await Restaurant.findOne({ user: userId });
+            let orders = await Order.find({ restaurant: restaurant._id });            
+            resolve(orders);
+        } catch(error) {
+            reject(error);
         }
     });
 }

@@ -34,6 +34,16 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try {
+        let orders = await orderService.getOrdersForRestaurant(req.params.id);
+
+        res.status(200).send(orders);
+    } catch (error) {
+        res.status(500).send({ error: error });
+    }
+});
+
 router.patch('/connect/:id', async (req, res) => {
     try {
         let id = req.params.id;
