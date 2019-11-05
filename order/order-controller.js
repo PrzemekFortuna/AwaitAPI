@@ -36,7 +36,6 @@ router.patch('/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        console.log(req.params.id);
         let orders = await orderService.getOrdersForRestaurant(req.params.id);
 
         res.status(200).send(orders);
@@ -58,16 +57,16 @@ router.patch('/connect/:id', async (req, res) => {
     }
 });
 
-router.get('/number/:id', async (req, res) => {
-    try {
-        let id = req.params.id;
+// router.get('/number/:id', async (req, res) => {
+//     try {
+//         let id = req.params.id;
 
-        let num = await numberService.getNumber(id);
+//         let num = await numberService.getNumber(id);
 
-        return res.status(200).send({ number: num });
-    } catch (error) {
-        return res.status(500).send(error);
-    }
-});
+//         return res.status(200).send({ number: num });
+//     } catch (error) {
+//         return res.status(500).send(error);
+//     }
+// });
 
 module.exports = router;

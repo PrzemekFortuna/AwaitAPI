@@ -4,7 +4,7 @@ const userService = require('../user/user-service');
 const roles = require('../user/roles');
 const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
-const mongoose = require('mongoose');
+const notificationService = require('../notifications/notifications-service');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
@@ -29,6 +29,11 @@ exports.changeStatus = (id, newStatus) => {
             order.status = newStatus;
 
             await order.save();
+
+            if (newStatus == statuses.ready) {
+                await notificationService.sendNotification('d98GqcvR8K8:APA91bEf0ttvrG9OhKrbxCV31H7KaQ7p7OzEac08nDx8aO79V6Ogf1MqWKGxvigXdyaiR4fFo547-Phs7AAWud0-FYsYZ3Dy038BjVIjCcf7BxTNgT119O8FEpHdCVfH_U7YIpMz8J2T', 'Title', order);
+            }
+
             resolve(order);
         } catch (err) {
             reject(err);
@@ -41,7 +46,7 @@ exports.connectUser = (id, userId) => {
         try {
             let user = await userService.getUser(userId);
 
-            if(user == null) {
+            if (user == null) {
                 reject({ code: 404, error: 'User not found!' });
             }
 
@@ -67,13 +72,16 @@ exports.connectUser = (id, userId) => {
 exports.getOrdersForRestaurant = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let restaurant = await Restaurant.findOne({ user: userId });        
-            let restId = mongoose.Types.ObjectId('5db82ea7ebc81b0017ce0f14');
-            let orders = await Order.find({ restaurant: restId });
-            
-            console.log(orders);
-            resolve(orders);
-        } catch(error) {
+            let restaurant = await Restaurant.findOne({ user: userId });
+
+            if(restaurant != null) {
+                let orders = await Order.find({ restaurant: userId });
+                resolve(orders);
+            } else {
+                reject({ error: 'Restaurant not found' });
+            }
+
+        } catch (error) {
             reject(error);
         }
     });
