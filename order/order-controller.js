@@ -36,6 +36,7 @@ router.patch('/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
+        console.log(req.params.id);
         let orders = await orderService.getOrdersForRestaurant(req.params.id);
 
         res.status(200).send(orders);

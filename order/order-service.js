@@ -4,6 +4,7 @@ const userService = require('../user/user-service');
 const roles = require('../user/roles');
 const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
+const mongoose = require('mongoose');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
@@ -66,8 +67,11 @@ exports.connectUser = (id, userId) => {
 exports.getOrdersForRestaurant = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let restaurant = await Restaurant.findOne({ user: userId });
-            let orders = await Order.find({ restaurant: restaurant._id });            
+            let restaurant = await Restaurant.findOne({ user: userId });        
+            let restId = mongoose.Types.ObjectId('5db82ea7ebc81b0017ce0f14');
+            let orders = await Order.find({ restaurant: restId });
+            
+            console.log(orders);
             resolve(orders);
         } catch(error) {
             reject(error);
