@@ -11,10 +11,7 @@ exports.sendNotification = (userId, title, body) => {
 
             let message = {
                 to: token,
-                notification: {
-                    title: title,
-                    body: body
-                }
+                data: body                
             }
 
             fcm.send(message, (err, response) => {
