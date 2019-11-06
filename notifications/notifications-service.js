@@ -1,10 +1,13 @@
+let userService = require('../user/user-service');
 let FCM = require('fcm-node');
 let key = require('./fcm-key.json');
 let fcm = new FCM(key.apiKey);
 
-exports.sendNotification = (token, title, body) => {
+exports.sendNotification = (userId, title, body) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let user = await userService.getUser(userId);
+            let token = user.token;
 
             let message = {
                 to: token,
@@ -19,7 +22,6 @@ exports.sendNotification = (token, title, body) => {
                     console.log(err);
                     reject();
                 } else {
-                    console.log('Success!');
                     resolve();
                 }
             });

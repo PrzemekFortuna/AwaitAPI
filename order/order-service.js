@@ -31,7 +31,7 @@ exports.changeStatus = (id, newStatus) => {
             await order.save();
 
             if (newStatus == statuses.ready) {
-                await notificationService.sendNotification('d98GqcvR8K8:APA91bEf0ttvrG9OhKrbxCV31H7KaQ7p7OzEac08nDx8aO79V6Ogf1MqWKGxvigXdyaiR4fFo547-Phs7AAWud0-FYsYZ3Dy038BjVIjCcf7BxTNgT119O8FEpHdCVfH_U7YIpMz8J2T', 'Title', order);
+                await notificationService.sendNotification(order.user, '', order);
             }
 
             resolve(order);
