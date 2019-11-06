@@ -3,13 +3,13 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const orderService = require('./order-service');
 const statuses = require('./order-statuses');
-const numberService = require('../number-generator/number-generator-service');
+const authService = require('../auth/auth-service');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 
-router.post('/', async (req, res) => {
+router.post('/', authService.allowRestaurant, async (req, res) => {
     try {
         if (req.body.restaurant === undefined)
             return res.status(400).send({ error: 'No restaurant id provided' });
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', authService.allowRestaurant, async (req, res) => {
     try {
         if (Object.values(statuses).indexOf(req.body.status) == -1)
             return res.status(400).send({ error: 'ValidationError: Status out of allowed range' });
@@ -34,7 +34,7 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authService.allowRestaurant, async (req, res) => {
     try {
         let orders = await orderService.getOrdersForRestaurant(req.params.id);
 
@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.patch('/connect/:id', async (req, res) => {
+router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
     try {
         let id = req.params.id;
         let userID = req.body.user;

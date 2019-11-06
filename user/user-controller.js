@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authService.allowAll, async (req, res) => {
     try {
         let id = req.params.id;
         let user = await userService.getUser(id);
@@ -39,7 +39,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', authService.allowAll, async (req, res) => {
     try {
         let id = req.params.id;
         let token = req.body.token;
