@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const orderService = require('./order-service');
 const statuses = require('./order-statuses');
 const authService = require('../auth/auth-service');
+const Order = require('./order');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
@@ -57,16 +58,16 @@ router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
     }
 });
 
-// router.get('/number/:id', async (req, res) => {
-//     try {
-//         let id = req.params.id;
+router.get('/stream/:id', async (req, res) => {
+    let pipleline = {
+        $match: {
+            operationType: 'insert'
+        }
+    };
 
-//         let num = await numberService.getNumber(id);
+    Order.watch(pipleline).on('change', data => console.log(data));
 
-//         return res.status(200).send({ number: num });
-//     } catch (error) {
-//         return res.status(500).send(error);
-//     }
-// });
+    res.status(200).send();
+});
 
 module.exports = router;
