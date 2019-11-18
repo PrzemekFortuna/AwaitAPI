@@ -72,8 +72,8 @@ app.use('/auth', authController);
 const orderController = require('./order/order-controller');
 app.use('/orders', orderController);
 
-let server = http.listen(3000, () => {
-    console.log('Server is running on port 3000');
+let server = http.listen(port, () => {
+    console.log('Server is running on port ', port);
 });
 
 module.exports=server;
