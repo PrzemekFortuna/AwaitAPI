@@ -1,9 +1,8 @@
 <h1>Hello world</h1>
 <script src="/orders/socket/connect/socket.io/socket.io.js"></script>
 <script>
-  var socket = io('localhost:3000', { path: '/orders/socket/connect/socket.io' });
-  socket.on('news', function (data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
+  var socket = io('localhost:3000?id=5db82ea7ebc81b0017ce0f14', { path: '/orders/socket/connect/socket.io' });
+  socket.on('5db82ea7ebc81b0017ce0f14', function (data) {
+    console.log(data);    
   });
 </script>

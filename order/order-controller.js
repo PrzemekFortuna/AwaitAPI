@@ -46,8 +46,7 @@ router.use(bodyParser.json());
 
 
 router.post('/', authService.allowRestaurant, async (req, res) => {
-    try {
-        console.log('XXX');
+    try {        
         if (req.body.restaurant === undefined)
             return res.status(400).send({ error: 'No restaurant id provided' });
 
