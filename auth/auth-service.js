@@ -67,7 +67,7 @@ function allow(req, allowedRoles) {
     });
 }
 
-function verifyJWT(allowedRoles, token) {
+exports.verifyJWT = (allowedRoles, token) => {
     return new Promise(async (resolve, reject) => {
         jwt.verify(token, config.secret, (err, decoded) => {
             if (!err) {

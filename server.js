@@ -4,6 +4,47 @@ var app = express();
 const hash = require('./utils/hash-service');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
+const http = require('http').Server(app);
+// const io = require('socket.io')(http, { path: '/orders/socket/connect/socket.io' });
+// const authService = require('./auth/auth-service');
+// const Order = require('./order/order');
+// const roles = require('./user/roles');
+
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/index.html');
+// });
+
+//socket
+
+// io.use((socket, next) => {
+//     console.log('Middleware');
+//     let jwt = socket.handshake.headers['Authorization'];
+
+//     authService.verifyJWT([roles.restaurant], jwt)
+//     .then(() => {
+//         next();
+//     })
+//     .catch( error => {
+//         next(error);
+//     });
+// });
+
+// io.on('connection', socket => {
+//     console.log('Connection');
+//     let id = socket.handshake.query.id;
+    
+//     let pipleline = {
+//         $match: {
+//             operationType: 'insert'
+//         }
+//     };
+
+//     Order.watch(pipleline).on('change', data => {
+//         console.log(data);
+//         socket.emit(id, data);
+//     });
+// });
+//
 
 let swaggerOptions = {
     swaggerDefinition: {
@@ -34,6 +75,10 @@ app.use('/auth', authController);
 
 const orderController = require('./order/order-controller');
 app.use('/orders', orderController);
+
+// let server = http.listen(3000, () => {
+//     console.log('Server is running on port 3000 XXX');
+// });
 
 var server = app.listen(port, () => {
     console.log('Server is running on port ', port);
