@@ -16,18 +16,17 @@ app.get('/', (req, res) => {
 
 //socket
 
-// io.use((socket, next) => {
-//     console.log('Middleware');
-//     let jwt = socket.handshake.headers['Authorization'];
+io.use((socket, next) => {
+    let jwt = socket.handshake.headers['authorization'];
 
-//     authService.verifyJWT([roles.restaurant], jwt)
-//     .then(() => {
-//         next();
-//     })
-//     .catch( error => {
-//         next(error);
-//     });
-// });
+    authService.verifyJWT([roles.restaurant], jwt)
+    .then(() => {
+        next();
+    })
+    .catch( () => {
+        next(new Error('Authorization failed!'))
+    });
+});
 
 io.on('connection', socket => {
     let id = socket.handshake.query.id;
@@ -74,11 +73,7 @@ const orderController = require('./order/order-controller');
 app.use('/orders', orderController);
 
 let server = http.listen(3000, () => {
-    console.log('Server is running on port 3000 XXX');
+    console.log('Server is running on port 3000');
 });
-
-// var server = app.listen(port, () => {
-//     console.log('Server is running on port ', port);
-// });
 
 module.exports=server;
