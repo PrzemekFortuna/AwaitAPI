@@ -78,3 +78,5 @@ function verifyJWT(allowedRoles, token) {
         });
     });
 }
+
+exports.verifyJWT = verifyJWT;

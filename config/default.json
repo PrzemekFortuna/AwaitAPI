@@ -1,3 +1,3 @@
 {
-    "db": "mongodb+srv://await:ikG1V4fio1XYBKdv@await-wdlon.mongodb.net/test?retryWrites=true&w=majority"
+    "db": "mongodb://awaitAdmin:primavera0809@await-shard-00-00-wdlon.mongodb.net:27017,await-shard-00-01-wdlon.mongodb.net:27017,await-shard-00-02-wdlon.mongodb.net:27017/test?ssl=true&replicaSet=Await-shard-0&authSource=admin"
 }
