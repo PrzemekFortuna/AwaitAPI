@@ -6,40 +6,7 @@ const orderService = require('./order-service');
 const statuses = require('./order-statuses');
 const authService = require('../auth/auth-service');
 const Order = require('./order');
-const roles = require('../user/roles');
 
-
-//socket
-
-// io.use((socket, next) => {
-//     console.log('Middleware');
-//     let jwt = socket.handshake.headers['Authorization'];
-
-//     authService.verifyJWT([roles.restaurant], jwt)
-//     .then(() => {
-//         next();
-//     })
-//     .catch( error => {
-//         next(error);
-//     });
-// });
-
-// io.on('connection', socket => {
-//     console.log('Connection');
-//     let id = socket.handshake.query.id;
-    
-//     let pipleline = {
-//         $match: {
-//             operationType: 'insert'
-//         }
-//     };
-
-//     Order.watch(pipleline).on('change', data => {
-//         console.log(data);
-//         socket.emit(id, data);
-//     });
-// });
-//
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
