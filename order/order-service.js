@@ -75,7 +75,7 @@ exports.getOrdersForRestaurant = (userId) => {
             let restaurant = await Restaurant.findOne({ user: userId });
 
             if(restaurant != null) {
-                let orders = await Order.find({ restaurant: userId });
+                let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready]} });
                 resolve(orders);
             } else {
                 reject({ error: 'Restaurant not found' });
