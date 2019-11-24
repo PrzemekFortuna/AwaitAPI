@@ -26,14 +26,15 @@ exports.changeStatus = (id, newStatus) => {
     return new Promise(async (resolve, reject) => {
         try {
             let order = await Order.findById(id);
-            order.status = newStatus;
-
-            await order.save();
-
-            if (newStatus == statuses.ready) {
-                await notificationService.sendNotification(order.user, '', order);
+            if(order) {
+                order.status = newStatus;
+                
+                await order.save();
+                
+                if (newStatus == statuses.ready && order.user) {
+                    await notificationService.sendNotification(order.user, '', order);
+                }                
             }
-
             resolve(order);
         } catch (err) {
             reject(err);
