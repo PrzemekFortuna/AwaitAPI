@@ -1,9 +1,44 @@
 var express = require('express');
 const db = require('./db/db');
 var app = express();
-const hash = require('./utils/hash-service');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
+const http = require('http').Server(app);
+const io = require('socket.io')(http, { path: '/orders/socket/connect/socket.io' });
+const authService = require('./auth/auth-service');
+const roles = require('./user/roles');
+const socketService = require('./order/socket');
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
+
+//socket
+
+io.use((socket, next) => {
+    let jwt = socket.handshake.headers['authorization'];
+
+    authService.verifyJWT([roles.restaurant], jwt)
+        .then(() => {
+            next();
+        })
+        .catch(() => {
+            next(new Error('Authorization failed!'))
+        });
+});
+
+io.on('connection', socket => {
+    let id = socket.handshake.query.id;
+    
+    socket.join(id);
+
+    socketService.connect(id, io);
+
+    socket.on('disconnect', () => {
+        socketService.disconnect(id);
+    });    
+});
+//
 
 let swaggerOptions = {
     swaggerDefinition: {
@@ -35,8 +70,8 @@ app.use('/auth', authController);
 const orderController = require('./order/order-controller');
 app.use('/orders', orderController);
 
-var server = app.listen(port, () => {
+let server = http.listen(port, () => {
     console.log('Server is running on port ', port);
 });
 
-module.exports=server;
+module.exports = server;

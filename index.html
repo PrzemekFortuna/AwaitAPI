@@ -1,0 +1,18 @@
+<h1>Hello world</h1>
+<script src="/orders/socket/connect/socket.io/socket.io.js"></script>
+<script>
+  var socket = io('await.herokuapp.com?id=5db82ea7ebc81b0017ce0f14', { transportOptions: {
+    polling: {
+      extraHeaders: {
+        'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InphaGlya2ViYWJAdGVzdC5wbCIsInJvbGUiOiJyZXN0YXVyYW50IiwiaWQiOiI1ZGQyZGQ2MDdjMGY2OTMwMTVlNGUzY2EiLCJpYXQiOjE1NzQxMDM2MDl9.L_uyxE0eAX2ebbvWykiYw8c7vlgZzzRS5m6Rd6bArGM'
+      }
+    }
+  }, path: '/orders/socket/connect/socket.io' });
+  socket.on('5db82ea7ebc81b0017ce0f14', function (data) {
+    console.log(data);
+  });
+
+  socket.on('error', error => {
+    console.log(error);
+  });
+</script>

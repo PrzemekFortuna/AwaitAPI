@@ -26,14 +26,15 @@ exports.changeStatus = (id, newStatus) => {
     return new Promise(async (resolve, reject) => {
         try {
             let order = await Order.findById(id);
-            order.status = newStatus;
-
-            await order.save();
-
-            if (newStatus == statuses.ready) {
-                await notificationService.sendNotification(order.user, '', order);
+            if(order) {
+                order.status = newStatus;
+                
+                await order.save();
+                
+                if (newStatus == statuses.ready && order.user) {
+                    await notificationService.sendNotification(order.user, '', order);
+                }                
             }
-
             resolve(order);
         } catch (err) {
             reject(err);
@@ -75,7 +76,7 @@ exports.getOrdersForRestaurant = (userId) => {
             let restaurant = await Restaurant.findOne({ user: userId });
 
             if(restaurant != null) {
-                let orders = await Order.find({ restaurant: userId });
+                let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready]} });
                 resolve(orders);
             } else {
                 reject({ error: 'Restaurant not found' });
