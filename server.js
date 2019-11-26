@@ -15,17 +15,17 @@ app.get('/', (req, res) => {
 
 //socket
 
-io.use((socket, next) => {
-    let jwt = socket.handshake.headers['authorization'];
+// io.use((socket, next) => {
+//     let jwt = socket.handshake.headers['authorization'];
 
-    authService.verifyJWT([roles.restaurant], jwt)
-        .then(() => {
-            next();
-        })
-        .catch(() => {
-            next(new Error('Authorization failed!'))
-        });
-});
+//     authService.verifyJWT([roles.restaurant], jwt)
+//         .then(() => {
+//             next();
+//         })
+//         .catch(() => {
+//             next(new Error('Authorization failed!'))
+//         });
+// });
 
 io.on('connection', socket => {
     let id = socket.handshake.query.id;

@@ -9,11 +9,11 @@ exports.connect = (restaurantId, socketServer) => {
         let index = streams.findIndex(s => s.key == restaurantId);
         streams[index] = found;
     } else {
-        let pipeline = {
+        let pipeline = [{
             $match: {
                 operationType: 'insert'
             }
-        };
+        }];
 
         let changeStream = Order.watch(pipeline).on('change', data => {
             if (data.fullDocument.restaurant == restaurantId) {
