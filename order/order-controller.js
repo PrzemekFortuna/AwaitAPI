@@ -13,7 +13,7 @@ router.use(bodyParser.json());
 
 
 router.post('/', authService.allowRestaurant, async (req, res) => {
-    try {        
+    try {
         if (req.body.restaurant === undefined)
             return res.status(400).send({ error: 'No restaurant id provided' });
 
@@ -67,9 +67,20 @@ router.get('/socket/:id', async (req, res) => {
         }
     };
 
-    Order.watch(pipleline).on('change', data => console.log(data));    
+    Order.watch(pipleline).on('change', data => console.log(data));
 
     res.status(200).send();
 });
 
+router.get('/test/:id', async (req, res) => {
+    try {
+        let resp = await orderService.getOrdersForRestaurantStream(req.params.id);
+        resp.subscribe(
+            data => {
+                res.status(200).send(data);
+            });
+    } catch (error) {
+        res.status(500).send({ error: error });
+    }
+});
 module.exports = router;

@@ -5,6 +5,7 @@ const roles = require('../user/roles');
 const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
 const notificationService = require('../notifications/notifications-service');
+const RX = require('rxjs');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
@@ -26,14 +27,14 @@ exports.changeStatus = (id, newStatus) => {
     return new Promise(async (resolve, reject) => {
         try {
             let order = await Order.findById(id);
-            if(order) {
+            if (order) {
                 order.status = newStatus;
-                
+
                 await order.save();
-                
+
                 if (newStatus == statuses.ready && order.user) {
                     await notificationService.sendNotification(order.user, '', order);
-                }                
+                }
             }
             resolve(order);
         } catch (err) {
@@ -75,13 +76,33 @@ exports.getOrdersForRestaurant = (userId) => {
         try {
             let restaurant = await Restaurant.findOne({ user: userId });
 
-            if(restaurant != null) {
-                let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready]} });
+            if (restaurant != null) {
+                let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } });
                 resolve(orders);
             } else {
                 reject({ error: 'Restaurant not found' });
             }
 
+        } catch (error) {
+            reject(error);
+        }
+    });
+}
+
+exports.getOrdersForRestaurantStream = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let restaurant = await Restaurant.findOne({ user: userId });
+
+            if(restaurant != null) {
+                let orders = RX.Observable.from(await Order.find({ restaurant: userId }))
+                .filter(order => order.status === statuses.inprogress || order.status === statuses.ready)
+                .toArray();
+
+                resolve(orders);
+            } else {
+                reject({ error: 'Restaurant not found' });
+            }
         } catch (error) {
             reject(error);
         }
