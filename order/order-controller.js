@@ -73,14 +73,14 @@ router.get('/socket/:id', async (req, res) => {
 });
 
 router.get('/test/:id', async (req, res) => {
-    try {
-        let resp = await orderService.getOrdersForRestaurantStream(req.params.id);
-        resp.subscribe(
-            data => {
+    let resp = orderService.getOrdersForRestaurantStream(req.params.id);
+    resp.subscribe(
+        data => {
+            if (!data.error) {
                 res.status(200).send(data);
-            });
-    } catch (error) {
-        res.status(500).send({ error: error });
-    }
+            } else {
+                res.status(data.code).send(data);
+            }
+        });
 });
 module.exports = router;

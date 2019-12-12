@@ -6,6 +6,7 @@ const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
 const notificationService = require('../notifications/notifications-service');
 const RX = require('rxjs');
+const observables = require('mongoose-observables');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
@@ -90,21 +91,15 @@ exports.getOrdersForRestaurant = (userId) => {
 }
 
 exports.getOrdersForRestaurantStream = (userId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let restaurant = await Restaurant.findOne({ user: userId });
-
-            if(restaurant != null) {
-                let orders = RX.Observable.from(await Order.find({ restaurant: userId }))
-                .filter(order => order.status === statuses.inprogress || order.status === statuses.ready)
-                .toArray();
-
-                resolve(orders);
+    return RX.Observable.fromPromise(Restaurant.findOne({ user: userId }).exec())
+        .mergeMap(restaurant => {
+            if (restaurant) {
+                return RX.Observable.fromPromise(Order.find({ restaurant: userId }).exec())
+                    .flatMap(order => RX.Observable.from(order))
+                    .filter(order => order.status === statuses.inprogress || order.status === statuses.ready)
+                    .toArray();
             } else {
-                reject({ error: 'Restaurant not found' });
+                return RX.Observable.of({ code: 400, error: 'Restaurant not found' });
             }
-        } catch (error) {
-            reject(error);
-        }
-    });
+        });
 }

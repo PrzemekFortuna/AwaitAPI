@@ -2,11 +2,14 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const restaurantService = require('../restaurant/restaurant-service');
 let Order = require('./order');
+let orderService = require('./order-service');
 let Restaurant = require('../restaurant/restaurant');
 let statuses = require('./order-statuses');
 let User = require('../user/user');
 const roles = require('../user/roles');
 let Numb = require('../number-generator/number');
+
+jest.setTimeout(180000);
 
 let server;
 let restaurant;
@@ -34,7 +37,7 @@ describe('/orders', () => {
             expect(res.status).toBe(201);
 
             let newOrder = res.body;
-            
+
             expect(newOrder).toHaveProperty('number', 1);
             expect(newOrder).toHaveProperty('note', order.note);
             expect(newOrder).toHaveProperty('restaurant', restaurant._id.toString());
@@ -117,8 +120,8 @@ describe('/orders', () => {
         it('should return 404 when user not found', async () => {
             let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
             let order = await Order.create(orderDTO);
-            
-            let res = await request(server).patch('/orders/connect/'+order._id).send({ user: mongoose.Types.ObjectId()});
+
+            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: mongoose.Types.ObjectId() });
 
             expect(res.status).toBe(404);
             expect(res.body).toHaveProperty('error');
@@ -136,4 +139,74 @@ describe('/orders', () => {
             expect(res.body).toHaveProperty('error');
         });
     });
+
+    // describe('Performance test', () => {
+    //     it('Imperative', async () => {
+    //         let index = 1;
+    //         let results = [];
+
+    //         for (let i = 0; i < 20; i++) {
+
+    //             let restaurantDTO = { email: 'user' + index + '@gmail.com', password: 'password1', name: 'RestaurantName' };
+    //             let rest = await restaurantService.createRestaurant(restaurantDTO);
+                
+    //             for(let k = 0; k < 500; k++) {
+    //                 await orderService.createOrder({ restaurant: rest.user });
+    //                 let tmp = await orderService.createOrder({ restaurant: rest.user });
+    //                 await orderService.changeStatus(tmp._id, statuses.canceled);
+    //             }
+                
+    //             let start = performance.now();
+    //             await orderService.getOrdersForRestaurant(rest.user);
+    //             let end = performance.now();
+                
+    //             results.push(end - start);
+                
+    //             index++;
+    //         }
+
+    //         let sum = 0;
+
+    //         results.forEach(element => {
+    //             sum += element;
+    //         });
+    //         let avg = sum / results.length;
+    //         console.log('Imperative: ', avg);
+    //     });
+
+    //     it('Reactive', async () => {
+    //         let index = 1;
+    //         let results = [];
+
+    //         for (let i = 0; i < 30; i++) {
+
+    //             let restaurantDTO = { email: 'user' + index + '@gmail.com', password: 'password1', name: 'RestaurantName' };
+    //             let rest = await restaurantService.createRestaurant(restaurantDTO);
+                
+    //             for(let k = 0; k < 500; k++) {
+    //                 await orderService.createOrder({ restaurant: rest.user });
+    //                 let tmp = await orderService.createOrder({ restaurant: rest.user });
+    //                 await orderService.changeStatus(tmp._id, statuses.canceled);
+    //             }
+                
+    //             let start = performance.now();
+    //             let tmp = orderService.getOrdersForRestaurantStream(rest.user);
+    //             tmp.subscribe(() => { }, () => { }, () => {
+    //                 let end = performance.now();
+                    
+    //                 results.push(end - start);
+    //             });
+                
+    //             index++;
+    //         }
+
+    //         let sum = 0;
+
+    //         results.forEach(element => {
+    //             sum += element;
+    //         });
+    //         let avg = sum / results.length;
+    //         console.log('Reactive: ', avg);
+    //     });
+    // });
 });
