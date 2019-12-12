@@ -6,7 +6,6 @@ const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
 const notificationService = require('../notifications/notifications-service');
 const RX = require('rxjs');
-const observables = require('mongoose-observables');
 
 exports.createOrder = (order) => {
     return new Promise(async (resolve, reject) => {
