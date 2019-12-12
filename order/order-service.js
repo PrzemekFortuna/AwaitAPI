@@ -23,6 +23,15 @@ exports.createOrder = (order) => {
     });
 }
 
+exports.createOrderStream = (order) => {
+    return RX.Observable.fromPromise(numberService.getNumber(order.restaurant))
+        .switchMap(number => {
+            order.status = statuses.inprogress;
+            order.number = number.number;
+            return RX.Observable.fromPromise(Order.create(order));
+        });
+}
+
 exports.changeStatus = (id, newStatus) => {
     return new Promise(async (resolve, reject) => {
         try {

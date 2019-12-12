@@ -12,16 +12,32 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 
-router.post('/', authService.allowRestaurant, async (req, res) => {
+// router.post('/', authService.allowRestaurant, async (req, res) => {
+//     try {
+//         if (req.body.restaurant === undefined)
+//             return res.status(400).send({ error: 'No restaurant id provided' });
+
+//         let newOrder = await orderService.createOrder(req.body);
+
+//         res.status(201).send(newOrder);
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
+
+router.post('/', authService.allowRestaurant, (req, res) => {
     try {
-        if (req.body.restaurant === undefined)
+        if (req.body.restaurant === undefined) {
             return res.status(400).send({ error: 'No restaurant id provided' });
+        }
 
-        let newOrder = await orderService.createOrder(req.body);
-
-        res.status(201).send(newOrder);
-    } catch (error) {
-        res.status(500).send(error);
+        orderService.createOrderStream(req.body)
+            .subscribe(newOrder => {
+                return res.status(201).send(newOrder);
+            });
+    }
+    catch (error) {
+        return res.status(500).send({ error: error });
     }
 });
 
