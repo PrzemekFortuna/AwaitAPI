@@ -41,15 +41,29 @@ router.post('/', authService.allowRestaurant, (req, res) => {
     }
 });
 
-router.patch('/:id', authService.allowRestaurant, async (req, res) => {
+// router.patch('/:id', authService.allowRestaurant, async (req, res) => {
+//     try {
+//         if (Object.values(statuses).indexOf(req.body.status) == -1)
+//             return res.status(400).send({ error: 'ValidationError: Status out of allowed range' });
+
+//         let modifiedOrder = await orderService.changeStatus(req.params.id, req.body.status);
+//         res.status(200).send(modifiedOrder);
+//     } catch (error) {
+//         res.status(500).send({ error: error });
+//     }
+// });
+
+router.patch('/:id', authService.allowRestaurant, (req, res) => {
     try {
         if (Object.values(statuses).indexOf(req.body.status) == -1)
             return res.status(400).send({ error: 'ValidationError: Status out of allowed range' });
 
-        let modifiedOrder = await orderService.changeStatus(req.params.id, req.body.status);
-        res.status(200).send(modifiedOrder);
+        orderService.changeStatusStream(req.params.id, req.body.status)
+            .subscribe(modifiedOrder => {
+                return res.status(200).send(modifiedOrder);
+            });
     } catch (error) {
-        res.status(500).send({ error: error });
+        return res.status(500).send({ error: error });
     }
 });
 

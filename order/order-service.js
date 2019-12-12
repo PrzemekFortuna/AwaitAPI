@@ -52,6 +52,21 @@ exports.changeStatus = (id, newStatus) => {
     });
 }
 
+exports.changeStatusStream = (id, newStatus) => {
+    return RX.Observable.fromPromise(Order.findById(id).exec())
+                .mergeMap(async order => {
+                    order.status = newStatus;
+
+                    await order.save();
+
+                    if(newStatus == statuses.ready && order.user) {
+                        await notificationService.sendNotification(order.user, '', order);
+                    }
+
+                    return order;
+                });
+}
+
 exports.connectUser = (id, userId) => {
     return new Promise(async (resolve, reject) => {
         try {
