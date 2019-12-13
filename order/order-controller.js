@@ -77,16 +77,34 @@ router.get('/:id', authService.allowRestaurant, async (req, res) => {
     }
 });
 
-router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
+// router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
+//     try {
+//         let id = req.params.id;
+//         let userID = req.body.user;
+
+//         await orderService.connectUser(id, userID);
+
+//         res.status(204).send({});
+//     } catch (err) {
+//         res.status(err.code).send(err);
+//     }
+// });
+
+router.patch('/connect/:id', authService.allowRestaurant, (req, res) => {
     try {
         let id = req.params.id;
         let userID = req.body.user;
 
-        await orderService.connectUser(id, userID);
-
-        res.status(204).send({});
-    } catch (err) {
-        res.status(err.code).send(err);
+        orderService.connectUserStream(id, userID)
+            .subscribe(order => {                            
+                if(order.error) {
+                    return res.status(order.code).send(order);
+                } else {
+                    return res.status(204).send({});
+                }
+            });
+    } catch (error) {
+        res.status(500).send({ error: err });
     }
 });
 

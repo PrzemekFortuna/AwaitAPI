@@ -54,17 +54,17 @@ exports.changeStatus = (id, newStatus) => {
 
 exports.changeStatusStream = (id, newStatus) => {
     return RX.Observable.fromPromise(Order.findById(id).exec())
-                .mergeMap(async order => {
-                    order.status = newStatus;
+        .mergeMap(async order => {
+            order.status = newStatus;
 
-                    await order.save();
+            await order.save();
 
-                    if(newStatus == statuses.ready && order.user) {
-                        await notificationService.sendNotification(order.user, '', order);
-                    }
+            if (newStatus == statuses.ready && order.user) {
+                await notificationService.sendNotification(order.user, '', order);
+            }
 
-                    return order;
-                });
+            return order;
+        });
 }
 
 exports.connectUser = (id, userId) => {
@@ -93,6 +93,33 @@ exports.connectUser = (id, userId) => {
             reject({ code: 500, error: error });
         }
     });
+}
+
+exports.connectUserStream = (id, userId) => {
+    try {
+        return RX.Observable.fromPromise(userService.getUser(userId))
+            .switchMap(user => {
+                if (user == null)
+                    return RX.Observable.of({ code: 404, error: 'User not found' });
+
+                if (user.role != roles.customer)
+                    return RX.Observable.of({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
+
+                return RX.Observable.fromPromise(Order.findById(id).exec())
+                    .switchMap(async order => {
+                        if (order == null)
+                            return { code: 404, error: 'Order not found' };
+
+                        order.user = user._id;
+
+                        await order.save();
+
+                        return order;
+                    });
+            });
+    } catch (error) {
+        return RX.Observable.of({ code: 500, error: error });
+    }
 }
 
 exports.getOrdersForRestaurant = (userId) => {
