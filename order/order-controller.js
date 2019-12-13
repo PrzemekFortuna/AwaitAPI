@@ -67,14 +67,26 @@ router.patch('/:id', authService.allowRestaurant, (req, res) => {
     }
 });
 
-router.get('/:id', authService.allowRestaurant, async (req, res) => {
-    try {
-        let orders = await orderService.getOrdersForRestaurant(req.params.id);
+// router.get('/:id', authService.allowRestaurant, async (req, res) => {
+//     try {
+//         let orders = await orderService.getOrdersForRestaurant(req.params.id);
 
-        res.status(200).send(orders);
-    } catch (error) {
-        res.status(500).send({ error: error });
-    }
+//         res.status(200).send(orders);
+//     } catch (error) {
+//         res.status(500).send({ error: error });
+//     }
+// });
+
+router.get('/:id', authService.allowRestaurant, (req, res) => {
+    let resp = orderService.getOrdersForRestaurantStream(req.params.id);
+    resp.subscribe(
+        data => {
+            if (!data.error) {
+                res.status(200).send(data);
+            } else {
+                res.status(data.code).send(data);
+            }
+        });
 });
 
 // router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
@@ -118,17 +130,5 @@ router.get('/socket/:id', async (req, res) => {
     Order.watch(pipleline).on('change', data => console.log(data));
 
     res.status(200).send();
-});
-
-router.get('/test/:id', async (req, res) => {
-    let resp = orderService.getOrdersForRestaurantStream(req.params.id);
-    resp.subscribe(
-        data => {
-            if (!data.error) {
-                res.status(200).send(data);
-            } else {
-                res.status(data.code).send(data);
-            }
-        });
 });
 module.exports = router;
