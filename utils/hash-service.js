@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const RX = require('rxjs');
 
 exports.hash = (value) => {
     return new Promise(async (resolve, reject) => {
@@ -9,6 +10,10 @@ exports.hash = (value) => {
             reject(error);
         }
     });
+}
+
+exports.hashStream = (value) => {
+    return RX.Observable.fromPromise(bcrypt.hash(value, 10));
 }
 
 exports.compare = (value, hashedValue) => {

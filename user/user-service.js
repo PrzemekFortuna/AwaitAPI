@@ -1,5 +1,7 @@
 const User = require('./user');
 const hashService = require('../utils/hash-service');
+const RX = require('rxjs');
+const HttpError = require('../utils/http-error');
 
 exports.addUser = (user) => {
     return new Promise(async (resolve, reject) => {
@@ -17,6 +19,26 @@ exports.addUser = (user) => {
     })
 }
 
+exports.addUserStream = (user) => {
+    if (user.password) {
+        return hashService.hashStream(user.password)
+            .mergeMap(hashedPassword => {
+                user.password = hashedPassword;
+
+                return RX.Observable.fromPromise(User.create(user));
+            })
+            .catch(error => {
+                if (error.message.includes('is required')) {
+                    throw new HttpError(400, error);
+                }
+
+                throw new HttpError(500, error);
+            });
+    } else {
+        return RX.Observable.throw(new HttpError(400, 'ValidationError: `password` is required'));
+    }
+}
+
 exports.getUser = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -31,9 +53,9 @@ exports.getUser = (id) => {
 exports.getUserByEmail = (email) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let user = await User.findOne({ email: email});
+            let user = await User.findOne({ email: email });
             resolve(user);
-        } catch(error) {
+        } catch (error) {
             reject(error);
         }
     });
@@ -44,14 +66,14 @@ exports.updateToken = (id, newToken) => {
         try {
             let user = await User.findOneAndUpdate({ _id: id }, { token: newToken });
 
-            if(newToken === null)
-                reject({ code: 400, error: 'New token cannot be null'});
+            if (newToken === null)
+                reject({ code: 400, error: 'New token cannot be null' });
 
-            if(user === null)
+            if (user === null)
                 reject({ code: 404, error: 'User not found' });
 
             resolve();
-        } catch(error) {
+        } catch (error) {
             reject({ code: 500, error: error });
         }
     });
