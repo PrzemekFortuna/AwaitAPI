@@ -72,6 +72,25 @@ describe('/users', () => {
             let usr = await userService.getUser(body._id);            
             expect(usr).toHaveProperty('token', 'dcba');
         });
+
+        it('should return 404 when provided wrong user id', async () => {
+            let res = await request(server).patch('/users/'+mongoose.Types.ObjectId()).send({ token: 'dcba'});
+
+            expect(res.status).toEqual(404);
+            expect(res.body).toHaveProperty('error');
+        });
+
+        it('should return 400 when new token is null', async () => {
+            let user = { token: 'abcd', name: 'username', lastname: 'userlastname', email: 'user@user.pl', password: 'password' };
+
+            let res = await request(server).post('/users/register').send(user);
+
+            expect(res.status).toEqual(201);            
+
+            res = await request(server).patch('/users/'+res.body._id).send();
+
+            expect(res.status).toEqual(400);
+        });
     });
 
     describe('GET /:id', () => {

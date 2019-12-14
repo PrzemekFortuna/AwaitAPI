@@ -78,3 +78,22 @@ exports.updateToken = (id, newToken) => {
         }
     });
 }
+
+exports.updateTokenStream = (id, newToken) => {
+    if (newToken === null || newToken === undefined)
+        return RX.Observable.throw(new HttpError(400, 'New token cannot be null'));
+
+    return RX.Observable.fromPromise(User.findOneAndUpdate({ _id: id }, { token: newToken }).exec())
+        .map(user => {
+            if (user === null)
+                throw new HttpError(404, 'User not found');
+
+            return user;
+        })
+        .catch(error => {
+            if (error instanceof HttpError)
+                throw error;
+
+            throw new HttpError(500, error)
+        });
+}

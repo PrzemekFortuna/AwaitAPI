@@ -29,7 +29,7 @@ router.post('/register', (req, res) => {
 
     userService.addUserStream(userDTO)
         .subscribe(
-            user => {            
+            user => {
                 user.password = undefined;
 
                 res.status(201).send(user);
@@ -54,16 +54,30 @@ router.get('/:id', authService.allowAll, async (req, res) => {
     }
 });
 
-router.patch('/:id', authService.allowAll, async (req, res) => {
-    try {
-        let id = req.params.id;
-        let token = req.body.token;
+// router.patch('/:id', authService.allowAll, async (req, res) => {
+//     try {
+//         let id = req.params.id;
+//         let token = req.body.token;
 
-        await userService.updateToken(id, token);
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).send({ error: error });
-    }
+//         await userService.updateToken(id, token);
+//         res.status(204).send();
+//     } catch (error) {
+//         res.status(500).send({ error: error });
+//     }
+// });
+
+router.patch('/:id', authService.allowAll, (req, res) => {
+    let id = req.params.id;
+    let token = req.body.token;
+
+    userService.updateTokenStream(id, token)
+        .subscribe(
+            user => {
+                return res.status(204).send();
+            },
+            error => {
+                return res.status(error.code).send({ error: error.message });
+            });
 });
 
 module.exports = router;
