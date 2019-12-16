@@ -26,3 +26,7 @@ exports.compare = (value, hashedValue) => {
         }
     });
 }
+
+exports.compareStream = (value, hashedValue) => {
+    return RX.Observable.fromPromise(bcrypt.compare(value, hashedValue));
+}

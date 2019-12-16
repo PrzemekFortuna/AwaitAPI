@@ -4,11 +4,13 @@ const hashService = require("../utils/hash-service");
 const userService = require("../user/user-service")
 const config = require("../config/config");
 const roles = require("../user/roles");
+const RX = require('rxjs');
+const HttpError = require('../utils/http-error');
 
 exports.login = (email, password) => {
     return new Promise(async (resolve, reject) => {
         let user = await userService.getUserByEmail(email);
-        
+
         if (user != null) {
             let isLoginSuccessful = await hashService.compare(password, user.password);
             if (isLoginSuccessful) {
@@ -23,7 +25,28 @@ exports.login = (email, password) => {
     });
 }
 
-exports.allowAll = async (req, res, next) => {    
+exports.loginStream = (email, password) => {
+    return userService.getUserByEmailStream(email)
+        .switchMap(user => {
+            return hashService.compareStream(password, user.password)
+                .switchMap(isLoginSuccessful => {
+                    if (isLoginSuccessful) {
+                        return RX.Observable.of(jwt.sign({ email: user.email, role: user.role, id: user._id }, config.secret))
+                            .map(token => { return { jwt: token } });
+                    }
+
+                    throw new HttpError(401, 'Login failed!');
+                });
+        })
+        .catch(error => {
+            if (error instanceof HttpError)
+                throw new HttpError(401, 'Login failed!');
+
+            throw new HttpError(500, error);
+        });
+}
+
+exports.allowAll = async (req, res, next) => {
     try {
         await allow(req, [roles.customer, roles.restaurant]);
         next();
@@ -45,7 +68,7 @@ exports.allowRestaurant = async (req, res, next) => {
     try {
         await allow(req, [roles.restaurant]);
         next();
-    } catch(err) {
+    } catch (err) {
         res.status(401).send({ error: 'Authorization failed!' });
     }
 }

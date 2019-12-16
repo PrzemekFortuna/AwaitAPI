@@ -61,6 +61,22 @@ exports.getUserByEmail = (email) => {
     });
 }
 
+exports.getUserByEmailStream = (email) => {
+    return RX.Observable.fromPromise(User.findOne({ email: email }).exec())
+        .switchMap(user => {
+            if (user === null)
+                throw new HttpError(404, 'User not found');
+
+            return RX.Observable.of(user);
+        })
+        .catch(error => {
+            if (error instanceof HttpError)
+                throw error;
+
+            throw new HttpError(500, error);
+        });
+}
+
 exports.updateToken = (id, newToken) => {
     return new Promise(async (resolve, reject) => {
         try {
