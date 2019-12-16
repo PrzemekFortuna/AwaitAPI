@@ -1,6 +1,7 @@
 const Restaurant = require('./restaurant');
 const userService = require('../user/user-service');
 const roles = require('../user/roles');
+const RX = require('rxjs');
 
 exports.createRestaurant = (restaurant) => {
     return new Promise(async (resolve, reject) => {
@@ -17,6 +18,16 @@ exports.createRestaurant = (restaurant) => {
     });
 }
 
+exports.createRestaurantStream = (restaurant) => {
+    restaurant.role = roles.restaurant;
+
+    return userService.addUserStream(restaurant)
+    .switchMap(user => {
+        let restaurantDTO = { name: restaurant.name, user: user._id, city: restaurant.city, zip: restaurant.zip, address: restaurant.address };
+
+        return RX.Observable.fromPromise(Restaurant.create(restaurantDTO));
+    });
+}
 exports.getRestaurant = (id) => {
     //TODO: return DTO
     return new Promise(async (resolve, reject) => {

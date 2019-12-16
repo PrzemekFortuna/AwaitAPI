@@ -8,16 +8,29 @@ const authService = require('../auth/auth-service');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-router.post('/register', async (req, res) => {
-    try {
-        let restaurantDTO = req.body;
-        restaurantDTO.role = roles.restaurant;
-        
-        let createdRestaurant = await restaurantService.createRestaurant(restaurantDTO);
-        res.status(201).send(createdRestaurant);
-    } catch (error) {
-        res.status(500).send(error);
-    }
+// router.post('/register', async (req, res) => {
+//     try {
+//         let restaurantDTO = req.body;
+//         restaurantDTO.role = roles.restaurant;
+
+//         let createdRestaurant = await restaurantService.createRestaurant(restaurantDTO);
+//         res.status(201).send(createdRestaurant);
+//     } catch (error) {
+//         res.status(500).send(error);
+//     }
+// });
+
+router.post('/register', (req, res) => {
+    let restaurantDTO = req.body;
+
+    restaurantService.createRestaurantStream(restaurantDTO)
+        .subscribe(
+            createdRestaurant => {
+                return res.status(201).send(createdRestaurant);
+            },
+            error => {
+                return res.status(500).send(error);
+            });
 });
 
 router.get('/:id', authService.allowRestaurant, async (req, res) => {
@@ -32,8 +45,8 @@ router.get('/:id', authService.allowRestaurant, async (req, res) => {
 router.delete('/:id', authService.allowRestaurant, async (req, res) => {
     try {
         let deletedRest = await restaurantService.deleteRestaurant(req.params.id);
-        deletedRest ? res.status(404).send({error: 'Restaurant not found'}) : res.status(200).send(deletedRest);
-    } catch(error) {
+        deletedRest ? res.status(404).send({ error: 'Restaurant not found' }) : res.status(200).send(deletedRest);
+    } catch (error) {
         res.status(500).send(error);
     }
 });
