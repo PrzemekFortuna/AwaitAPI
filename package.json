@@ -21,6 +21,7 @@
     "config": "^3.1.0",
     "express": "^4.16.4",
     "fcm-node": "^1.5.2",
+    "gatlingjs": "0.0.7",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.4.21",
     "rxjs": "^5.5.12",

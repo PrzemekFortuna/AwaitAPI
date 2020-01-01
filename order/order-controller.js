@@ -67,15 +67,15 @@ router.patch('/:id', authService.allowRestaurant, (req, res) => {
     }
 });
 
-// router.get('/:id', authService.allowRestaurant, async (req, res) => {
-//     try {
-//         let orders = await orderService.getOrdersForRestaurant(req.params.id);
+router.get('/old/:id', authService.allowRestaurant, async (req, res) => {
+    try {
+        let orders = await orderService.getOrdersForRestaurant(req.params.id);
 
-//         res.status(200).send(orders);
-//     } catch (error) {
-//         res.status(500).send({ error: error });
-//     }
-// });
+        res.status(200).send(orders);
+    } catch (error) {
+        res.status(500).send({ error: error });
+    }
+});
 
 router.get('/:id', authService.allowRestaurant, (req, res) => {
     let resp = orderService.getOrdersForRestaurantStream(req.params.id);
