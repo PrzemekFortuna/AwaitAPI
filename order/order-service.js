@@ -7,21 +7,21 @@ const Restaurant = require('../restaurant/restaurant');
 const notificationService = require('../notifications/notifications-service');
 const RX = require('rxjs');
 
-exports.createOrder = (order) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            order.status = statuses.inprogress;
-            let number = await numberService.getNumber(order.restaurant);
-            order.number = number.number;
+// exports.createOrder = (order) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             order.status = statuses.inprogress;
+//             let number = await numberService.getNumber(order.restaurant);
+//             order.number = number.number;
 
-            let newOrder = await Order.create(order);
+//             let newOrder = await Order.create(order);
 
-            resolve(newOrder);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
+//             resolve(newOrder);
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// }
 
 exports.createOrderStream = (order) => {
     return RX.Observable.fromPromise(numberService.getNumber(order.restaurant))
@@ -32,25 +32,25 @@ exports.createOrderStream = (order) => {
         });
 }
 
-exports.changeStatus = (id, newStatus) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let order = await Order.findById(id);
-            if (order) {
-                order.status = newStatus;
+// exports.changeStatus = (id, newStatus) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             let order = await Order.findById(id);
+//             if (order) {
+//                 order.status = newStatus;
 
-                await order.save();
+//                 await order.save();
 
-                if (newStatus == statuses.ready && order.user) {
-                    await notificationService.sendNotification(order.user, '', order);
-                }
-            }
-            resolve(order);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
+//                 if (newStatus == statuses.ready && order.user) {
+//                     await notificationService.sendNotification(order.user, '', order);
+//                 }
+//             }
+//             resolve(order);
+//         } catch (err) {
+//             reject(err);
+//         }
+//     });
+// }
 
 exports.changeStatusStream = (id, newStatus) => {
     return RX.Observable.fromPromise(Order.findById(id).exec())
@@ -67,33 +67,33 @@ exports.changeStatusStream = (id, newStatus) => {
         });
 }
 
-exports.connectUser = (id, userId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let user = await userService.getUser(userId);
+// exports.connectUser = (id, userId) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             let user = await userService.getUser(userId);
 
-            if (user == null) {
-                reject({ code: 404, error: 'User not found!' });
-            }
+//             if (user == null) {
+//                 reject({ code: 404, error: 'User not found!' });
+//             }
 
-            if (user.role != roles.customer) {
-                reject({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
-            }
+//             if (user.role != roles.customer) {
+//                 reject({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
+//             }
 
-            let order = await Order.findById(id);
-            if (order == null) {
-                reject({ code: 404, error: 'Order not found!' });
-            }
+//             let order = await Order.findById(id);
+//             if (order == null) {
+//                 reject({ code: 404, error: 'Order not found!' });
+//             }
 
-            order.user = user._id;
-            await order.save();
+//             order.user = user._id;
+//             await order.save();
 
-            resolve();
-        } catch (error) {
-            reject({ code: 500, error: error });
-        }
-    });
-}
+//             resolve();
+//         } catch (error) {
+//             reject({ code: 500, error: error });
+//         }
+//     });
+// }
 
 exports.connectUserStream = (id, userId) => {
     try {
@@ -122,23 +122,23 @@ exports.connectUserStream = (id, userId) => {
     }
 }
 
-exports.getOrdersForRestaurant = (userId) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let restaurant = await Restaurant.findOne({ user: userId });
+// exports.getOrdersForRestaurant = (userId) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             let restaurant = await Restaurant.findOne({ user: userId });
 
-            if (restaurant != null) {
-                let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } });
-                resolve(orders);
-            } else {
-                reject({ error: 'Restaurant not found' });
-            }
+//             if (restaurant != null) {
+//                 let orders = await Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } });
+//                 resolve(orders);
+//             } else {
+//                 reject({ error: 'Restaurant not found' });
+//             }
 
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
+//         } catch (error) {
+//             reject(error);
+//         }
+//     });
+// }
 
 exports.getOrdersForRestaurantStream = (userId) => {
     return RX.Observable.fromPromise(Restaurant.findOne({ user: userId }).exec())

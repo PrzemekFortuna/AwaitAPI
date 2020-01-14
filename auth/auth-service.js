@@ -7,23 +7,23 @@ const roles = require("../user/roles");
 const RX = require('rxjs');
 const HttpError = require('../utils/http-error');
 
-exports.login = (email, password) => {
-    return new Promise(async (resolve, reject) => {
-        let user = await userService.getUserByEmail(email);
+// exports.login = (email, password) => {
+//     return new Promise(async (resolve, reject) => {
+//         let user = await userService.getUserByEmail(email);
 
-        if (user != null) {
-            let isLoginSuccessful = await hashService.compare(password, user.password);
-            if (isLoginSuccessful) {
-                let token = await jwt.sign({ email: user.email, role: user.role, id: user._id }, config.secret);
-                resolve({ jwt: token });
-            } else {
-                reject({ code: 401, message: "Login failed!" });
-            }
-        } else {
-            reject({ code: 401, message: "Login failed!" });
-        }
-    });
-}
+//         if (user != null) {
+//             let isLoginSuccessful = await hashService.compare(password, user.password);
+//             if (isLoginSuccessful) {
+//                 let token = await jwt.sign({ email: user.email, role: user.role, id: user._id }, config.secret);
+//                 resolve({ jwt: token });
+//             } else {
+//                 reject({ code: 401, message: "Login failed!" });
+//             }
+//         } else {
+//             reject({ code: 401, message: "Login failed!" });
+//         }
+//     });
+// }
 
 exports.loginStream = (email, password) => {
     return userService.getUserByEmailStream(email)

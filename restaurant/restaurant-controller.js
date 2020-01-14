@@ -33,22 +33,4 @@ router.post('/register', (req, res) => {
             });
 });
 
-router.get('/:id', authService.allowRestaurant, async (req, res) => {
-    try {
-        let restaurant = await restaurantService.getRestaurant(req.params.id);
-        restaurant ? res.status(200).send(restaurant) : res.status(404).send({ error: 'Restaurant with given ID not found!' });
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
-router.delete('/:id', authService.allowRestaurant, async (req, res) => {
-    try {
-        let deletedRest = await restaurantService.deleteRestaurant(req.params.id);
-        deletedRest ? res.status(404).send({ error: 'Restaurant not found' }) : res.status(200).send(deletedRest);
-    } catch (error) {
-        res.status(500).send(error);
-    }
-});
-
 module.exports = router;

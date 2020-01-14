@@ -28,25 +28,3 @@ exports.createRestaurantStream = (restaurant) => {
         return RX.Observable.fromPromise(Restaurant.create(restaurantDTO));
     });
 }
-exports.getRestaurant = (id) => {
-    //TODO: return DTO
-    return new Promise(async (resolve, reject) => {
-        try {
-            var restaurant = await Restaurant.findById(id);
-            resolve(restaurant);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-exports.deleteRestaurant = (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let deletedRestaurant = await Restaurant.findByIdAndDelete(id);
-            resolve(deletedRestaurant);
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
