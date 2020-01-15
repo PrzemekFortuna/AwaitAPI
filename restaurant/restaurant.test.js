@@ -28,6 +28,25 @@ describe('/restaurants', () => {
             expect(body).toHaveProperty('address', reqBody.address);
             expect(body).toHaveProperty('name', reqBody.name);
         });
+
+        it('should return 400 when email/password is empty or not present', async () => {
+            let reqBody = { email: 'user@gmail.com', password: 'password1', name: 'RestaurantName', city: 'Lodz', zip:'90057', address: 'al. Politechniki 112' };
+
+            reqBody.email = undefined;
+
+            res = await request(server).post('/restaurants/register').send(reqBody);
+
+            expect(res.status).toEqual(400);
+            expect(res.body.error.includes('`email` is required')).toBeTruthy();
+
+            reqBody.email = 'user@user.com';
+            reqBody.password = undefined;
+
+            res = await request(server).post('/restaurants/register').send(reqBody);
+
+            expect(res.status).toEqual(400);
+            expect(res.body.error.includes('`password` is required')).toBeTruthy();
+        });
     });
 
 });
