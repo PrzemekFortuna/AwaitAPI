@@ -73,6 +73,29 @@ describe('/orders', () => {
         });
     });
 
+    describe('GET /orders/:id', () => {
+        it('should return all orders for restaurant with id', async () => {
+            let orderDTO = { number: 1, note: 'order note', restaurant: restaurant.user, status: 1 };
+            var order = await Order.create(orderDTO);
+            order = await Order.create(orderDTO);
+
+            let res = await request(server).get('/orders/'+restaurant.user);
+
+            expect(res.status).toBe(200);
+            expect(res.body.length).toBe(2);
+
+            res.body.forEach(element => {
+                expect(element.restaurant).toEqual(restaurant.user.toString());
+            });
+        });
+
+        it('should return 400 when wrong restaurant id provided', async () => {
+            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId());
+
+            expect(res.status).toBe(400);
+        });
+    });
+
     describe('PATCH /orders/id', () => {
         it('should change order status', async () => {
             let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
