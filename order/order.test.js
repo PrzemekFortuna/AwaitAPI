@@ -96,6 +96,37 @@ describe('/orders', () => {
         });
     });
 
+    describe('GET /orders/eager/:id', () => {
+        it('should return all orders with user object for restaurant with id', async () => {
+            let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
+            let user = await User.create(userDTO);
+            let orderDTO = { number: 1, note: 'order note', restaurant: restaurant.user, status: 1, user: user._id };
+            var order = await Order.create(orderDTO);
+            order = await Order.create(orderDTO);
+
+            let res = await request(server).get('/orders/eager/'+restaurant.user);
+
+            expect(res.status).toBe(200);
+            expect(res.body.length).toBe(2);
+
+            res.body.forEach(element => {
+                expect(element.restaurant).toEqual(restaurant.user.toString());
+                expect(element.user).toHaveProperty('name', user.name);
+                expect(element.user).toHaveProperty('lastname', user.lastname);
+                expect(element.user).toHaveProperty('role', user.role);
+                expect(element.user).toHaveProperty('email', user.email);                
+                expect(element.user).not.toHaveProperty('password');
+            });
+        });
+
+        it('should return 400 when wrong restaurant id provided', async () => {
+            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId());
+
+            expect(res.status).toBe(400);
+        });
+
+    });
+
     describe('PATCH /orders/id', () => {
         it('should change order status', async () => {
             let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
@@ -161,75 +192,5 @@ describe('/orders', () => {
             expect(res.status).toBe(400);
             expect(res.body).toHaveProperty('error');
         });
-    });
-
-    // describe('Performance test', () => {
-    //     it('Imperative', async () => {
-    //         let index = 1;
-    //         let results = [];
-
-    //         for (let i = 0; i < 20; i++) {
-
-    //             let restaurantDTO = { email: 'user' + index + '@gmail.com', password: 'password1', name: 'RestaurantName' };
-    //             let rest = await restaurantService.createRestaurant(restaurantDTO);
-                
-    //             for(let k = 0; k < 500; k++) {
-    //                 await orderService.createOrder({ restaurant: rest.user });
-    //                 let tmp = await orderService.createOrder({ restaurant: rest.user });
-    //                 await orderService.changeStatus(tmp._id, statuses.canceled);
-    //             }
-                
-    //             let start = performance.now();
-    //             await orderService.getOrdersForRestaurant(rest.user);
-    //             let end = performance.now();
-                
-    //             results.push(end - start);
-                
-    //             index++;
-    //         }
-
-    //         let sum = 0;
-
-    //         results.forEach(element => {
-    //             sum += element;
-    //         });
-    //         let avg = sum / results.length;
-    //         console.log('Imperative: ', avg);
-    //     });
-
-    //     it('Reactive', async () => {
-    //         let index = 1;
-    //         let results = [];
-
-    //         for (let i = 0; i < 30; i++) {
-
-    //             let restaurantDTO = { email: 'user' + index + '@gmail.com', password: 'password1', name: 'RestaurantName' };
-    //             let rest = await restaurantService.createRestaurant(restaurantDTO);
-                
-    //             for(let k = 0; k < 500; k++) {
-    //                 await orderService.createOrder({ restaurant: rest.user });
-    //                 let tmp = await orderService.createOrder({ restaurant: rest.user });
-    //                 await orderService.changeStatus(tmp._id, statuses.canceled);
-    //             }
-                
-    //             let start = performance.now();
-    //             let tmp = orderService.getOrdersForRestaurantStream(rest.user);
-    //             tmp.subscribe(() => { }, () => { }, () => {
-    //                 let end = performance.now();
-                    
-    //                 results.push(end - start);
-    //             });
-                
-    //             index++;
-    //         }
-
-    //         let sum = 0;
-
-    //         results.forEach(element => {
-    //             sum += element;
-    //         });
-    //         let avg = sum / results.length;
-    //         console.log('Reactive: ', avg);
-    //     });
-    // });
+    });    
 });
