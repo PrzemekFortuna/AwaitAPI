@@ -153,3 +153,25 @@ exports.getOrdersForRestaurantStream = (userId) => {
             }
         });
 }
+
+exports.getOrdersForRestaurantEagerly = (userId) => {
+    return RX.Observable.fromPromise(Restaurant.findOne({ user: userId }).exec())
+        .mergeMap(restaurant => {
+            if (restaurant) {
+                return RX.Observable.fromPromise(Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } }).exec())
+                    .flatMap(order => RX.Observable.from(order))
+                    .mergeMap(order => RX.Observable.forkJoin(RX.Observable.fromPromise(userService.getUser(order.user)),
+                    user => {
+                        if(user)
+                            user.password = undefined;
+
+                        order.user = user;
+
+                        return order;
+                    }))
+                    .toArray();
+            } else {
+                return RX.Observable.of({ code: 400, error: 'Restaurant not found' });
+            }
+        });
+}

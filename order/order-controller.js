@@ -108,8 +108,8 @@ router.patch('/connect/:id', authService.allowRestaurant, (req, res) => {
         let userID = req.body.user;
 
         orderService.connectUserStream(id, userID)
-            .subscribe(order => {                            
-                if(order.error) {
+            .subscribe(order => {
+                if (order.error) {
                     return res.status(order.code).send(order);
                 } else {
                     return res.status(204).send({});
@@ -131,4 +131,16 @@ router.get('/socket/:id', async (req, res) => {
 
     res.status(200).send();
 });
+
+router.get('/eager/:id', async (req, res) => {
+    let resp = orderService.getOrdersForRestaurantEagerly(req.params.id);
+    resp.subscribe(
+        data => {
+            if (!data.error) {
+                res.status(200).send(data);
+            } else {
+                res.status(data.code).send(data);
+            }
+        });
+})
 module.exports = router;
