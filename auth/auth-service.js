@@ -75,10 +75,6 @@ exports.allowRestaurant = async (req, res, next) => {
 
 function allow(req, allowedRoles) {
     return new Promise(async (resolve, reject) => {
-        let env = process.env.NODE_ENV;
-        if (env == 'test')
-            resolve();
-
         let token = req.headers['authorization'];
 
         try {

@@ -8,16 +8,19 @@ let statuses = require('./order-statuses');
 let User = require('../user/user');
 const roles = require('../user/roles');
 let Numb = require('../number-generator/number');
+const authTestService = require('../utils/authTestService');
 
 jest.setTimeout(180000);
 
 let server;
 let restaurant;
+let jwt;
 
 describe('/orders', () => {
     beforeEach(async () => {
         server = require('../server');
         restaurant = await restaurantService.createRestaurant({ email: 'user@gmail.com', password: 'password1', name: 'RestaurantName', city: 'Lodz', zip: '90057', address: 'al. Politechniki 112' });
+        jwt = await authTestService.getRestaurantJWT();
     });
 
     afterEach(() => {
@@ -32,7 +35,7 @@ describe('/orders', () => {
         it('should return 201 when new order is created. It should contain property status with value "new"', async () => {
             let order = { note: 'order note', restaurant: restaurant._id };
 
-            let res = await request(server).post('/orders').send(order);
+            let res = await request(server).post('/orders').set('authorization', jwt).send(order);
 
             expect(res.status).toBe(201);
 
@@ -47,7 +50,7 @@ describe('/orders', () => {
         it('should return 400 when no restaurant id is provided', async () => {
             let order = { note: 'order note' };
 
-            let res = await request(server).post('/orders').send(order);
+            let res = await request(server).post('/orders').set('authorization', jwt).send(order);
 
             expect(res.status).toBe(400);
         });
@@ -55,7 +58,7 @@ describe('/orders', () => {
         it('should generate correct order numbers', async () => {
             let order = { note: 'order note', restaurant: restaurant._id };
 
-            let res = await request(server).post('/orders').send(order);
+            let res = await request(server).post('/orders').set('authorization', jwt).send(order);
 
             expect(res.status).toBe(201);
 
@@ -63,7 +66,7 @@ describe('/orders', () => {
 
             expect(newOrder).toHaveProperty('number', 1);
 
-            res = await request(server).post('/orders').send(order);
+            res = await request(server).post('/orders').set('authorization', jwt).send(order);
 
             expect(res.status).toBe(201);
 
@@ -79,7 +82,7 @@ describe('/orders', () => {
             var order = await Order.create(orderDTO);
             order = await Order.create(orderDTO);
 
-            let res = await request(server).get('/orders/'+restaurant.user);
+            let res = await request(server).get('/orders/'+restaurant.user).set('authorization', jwt);
 
             expect(res.status).toBe(200);
             expect(res.body.length).toBe(2);
@@ -90,7 +93,7 @@ describe('/orders', () => {
         });
 
         it('should return 400 when wrong restaurant id provided', async () => {
-            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId());
+            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId()).set('authorization', jwt);
 
             expect(res.status).toBe(400);
         });
@@ -104,7 +107,7 @@ describe('/orders', () => {
             var order = await Order.create(orderDTO);
             order = await Order.create(orderDTO);
 
-            let res = await request(server).get('/orders/eager/'+restaurant.user);
+            let res = await request(server).get('/orders/eager/'+restaurant.user).set('authorization', jwt);
 
             expect(res.status).toBe(200);
             expect(res.body.length).toBe(2);
@@ -120,7 +123,7 @@ describe('/orders', () => {
         });
 
         it('should return 400 when wrong restaurant id provided', async () => {
-            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId());
+            let res = await request(server).get('/orders/'+mongoose.Types.ObjectId()).set('authorization', jwt);
 
             expect(res.status).toBe(400);
         });
@@ -133,7 +136,7 @@ describe('/orders', () => {
             var order = await Order.create(orderDTO);
 
             let newStatus = { status: statuses.inprogress };
-            let res = await request(server).patch('/orders/' + order._id).send(newStatus);
+            let res = await request(server).patch('/orders/' + order._id).set('authorization', jwt).send(newStatus);
 
             expect(res.status).toBe(200);
             expect(res.body.status).toBe(statuses.inprogress);
@@ -144,7 +147,7 @@ describe('/orders', () => {
             let order = await Order.create(orderDTO);
 
             let newStatus = { status: 9 };
-            let res = await request(server).patch('/orders/' + order._id).send(newStatus);
+            let res = await request(server).patch('/orders/' + order._id).set('authorization', jwt).send(newStatus);
 
             expect(res.status).toBe(400);
         });
@@ -157,7 +160,7 @@ describe('/orders', () => {
             let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
             let user = await User.create(userDTO);
 
-            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: user._id });
+            let res = await request(server).patch('/orders/connect/' + order._id).set('authorization', jwt).send({ user: user._id });
 
             expect(res.status).toBe(204);
         });
@@ -165,7 +168,7 @@ describe('/orders', () => {
         it('should return 404 when order not found', async () => {
             let userDTO = { name: 'username', lastname: 'userlastname', role: roles.customer, email: 'user@user.pl', password: 'password' };
             let user = await User.create(userDTO);
-            let res = await request(server).patch('/orders/connect/' + mongoose.Types.ObjectId()).send({ user: user._id });
+            let res = await request(server).patch('/orders/connect/' + mongoose.Types.ObjectId()).set('authorization', jwt).send({ user: user._id });
 
             expect(res.status).toBe(404);
             expect(res.body).toHaveProperty('error');
@@ -175,7 +178,7 @@ describe('/orders', () => {
             let orderDTO = { number: 11, note: 'order note', restaurant: restaurant._id };
             let order = await Order.create(orderDTO);
 
-            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: mongoose.Types.ObjectId() });
+            let res = await request(server).patch('/orders/connect/' + order._id).set('authorization', jwt).send({ user: mongoose.Types.ObjectId() });
 
             expect(res.status).toBe(404);
             expect(res.body).toHaveProperty('error');
@@ -187,7 +190,7 @@ describe('/orders', () => {
             let userDTO = { name: 'username', lastname: 'userlastname', role: roles.restaurant, email: 'user@user.pl', password: 'password' };
             let user = await User.create(userDTO);
 
-            let res = await request(server).patch('/orders/connect/' + order._id).send({ user: user._id });
+            let res = await request(server).patch('/orders/connect/' + order._id).set('authorization', jwt).send({ user: user._id });
 
             expect(res.status).toBe(400);
             expect(res.body).toHaveProperty('error');
