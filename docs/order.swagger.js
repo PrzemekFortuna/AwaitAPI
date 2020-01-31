@@ -32,6 +32,68 @@
  *              descritpion: No restaurant ID provided
  */
 
+ /**
+ * @swagger
+ * 
+ * /orders/:id:
+ *  get:
+ *      description: x Gets all active orders for restaurant with given id
+ *      produces:
+ *          - application/json
+ *      tags:
+ *          - Orders
+ *      parameters:
+ *          - name: id
+ *            description: Id of restaurant
+ *            in: path
+ *            required: true
+ *            type: string
+ *      responses:
+ *          200:
+ *              description: Lists active orders for restaurant
+ */
+
+/**
+ * @swagger
+ * 
+ * /orders/eager/:id:
+ *  get:
+ *      description: x (EAGER LOADING) Gets all active orders for restaurant with given id
+ *      produces:
+ *          - application/json
+ *      tags:
+ *          - Orders
+ *      parameters:
+ *          - name: id
+ *            description: Id of restaurant
+ *            in: path
+ *            required: true
+ *            type: string
+ *      responses:
+ *          200:
+ *              description: Lists active orders for restaurant with users objects included
+*/
+
+/**
+ * @swagger
+ * 
+ * /orders/socket/:id:
+ *  get:
+ *      description: x (EAGER LOADING) Gets all active orders for restaurant with given id
+ *      produces:
+ *          - application/json
+ *      tags:
+ *          - Orders
+ *      parameters:
+ *          - name: id
+ *            description: Id of restaurant
+ *            in: path
+ *            required: true
+ *            type: string
+ *      responses:
+ *          200:
+ *              description: Lists active orders for restaurant with users objects included
+*/
 
 /**
  * @swagger
