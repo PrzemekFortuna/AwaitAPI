@@ -120,18 +120,6 @@ router.patch('/connect/:id', authService.allowRestaurant, (req, res) => {
     }
 });
 
-router.get('/socket/:id', async (req, res) => {
-    let pipleline = {
-        $match: {
-            operationType: 'insert'
-        }
-    };
-
-    Order.watch(pipleline).on('change', data => console.log(data));
-
-    res.status(200).send();
-});
-
 router.get('/eager/:id', async (req, res) => {
     let resp = orderService.getOrdersForRestaurantEagerly(req.params.id);
     resp.subscribe(

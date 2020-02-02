@@ -1,4 +1,5 @@
 const Order = require('./order');
+const mongoose = require('mongoose');
 
 let streams = [];
 
@@ -9,17 +10,13 @@ exports.connect = (restaurantId, socketServer) => {
         let index = streams.findIndex(s => s.key == restaurantId);
         streams[index] = found;
     } else {
-        let pipeline = [{
-            $match: {
-                operationType: 'insert'
-            }
-        }];
+        let pipeline = [
+            { $match: { operationType: 'insert' } },
+            { $match: { "fullDocument.restaurant": mongoose.Types.ObjectId(restaurantId) } }
+        ];
 
         let changeStream = Order.watch(pipeline).on('change', data => {
-            if (data.fullDocument.restaurant == restaurantId) {
-                socketServer.to(restaurantId).emit(data.fullDocument.restaurant, data.fullDocument);
-                
-            }
+            socketServer.to(restaurantId).emit(data.fullDocument.restaurant, data.fullDocument);
         });
 
         let stream = {
@@ -33,10 +30,10 @@ exports.connect = (restaurantId, socketServer) => {
 }
 
 exports.disconnect = (restaurantId) => {
-    let found = streams.find(s => s.key == restaurantId);    
-    if(found) {
+    let found = streams.find(s => s.key == restaurantId);
+    if (found) {
         let index = streams.findIndex(s => s.key == restaurantId);
-        if(found.connectedUsers == 1) {
+        if (found.connectedUsers == 1) {
             found.stream.close()
             streams.splice(index, 1);
         } else {
