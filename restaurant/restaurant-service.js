@@ -25,6 +25,6 @@ exports.createRestaurantStream = (restaurant) => {
     .switchMap(user => {
         let restaurantDTO = { name: restaurant.name, user: user._id, city: restaurant.city, zip: restaurant.zip, address: restaurant.address };
 
-        return RX.Observable.fromPromise(Restaurant.create(restaurantDTO));
+        return RX.Observable.from(Restaurant.create(restaurantDTO));
     });
 }

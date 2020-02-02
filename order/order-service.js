@@ -24,11 +24,11 @@ const RX = require('rxjs');
 // }
 
 exports.createOrderStream = (order) => {
-    return RX.Observable.fromPromise(numberService.getNumber(order.restaurant))
+    return RX.Observable.from(numberService.getNumber(order.restaurant))
         .switchMap(number => {
             order.status = statuses.inprogress;
             order.number = number.number;
-            return RX.Observable.fromPromise(Order.create(order));
+            return RX.Observable.from(Order.create(order));
         });
 }
 
@@ -53,7 +53,7 @@ exports.createOrderStream = (order) => {
 // }
 
 exports.changeStatusStream = (id, newStatus) => {
-    return RX.Observable.fromPromise(Order.findById(id).exec())
+    return RX.Observable.from(Order.findById(id).exec())
         .mergeMap(async order => {
             order.status = newStatus;
 
@@ -97,7 +97,7 @@ exports.changeStatusStream = (id, newStatus) => {
 
 exports.connectUserStream = (id, userId) => {
     try {
-        return RX.Observable.fromPromise(userService.getUser(userId))
+        return RX.Observable.from(userService.getUser(userId))
             .switchMap(user => {
                 if (user == null)
                     return RX.Observable.of({ code: 404, error: 'User not found' });
@@ -105,7 +105,7 @@ exports.connectUserStream = (id, userId) => {
                 if (user.role != roles.customer)
                     return RX.Observable.of({ code: 400, error: 'Wrong role! Cannot assign user with role "restaurant" to order.' });
 
-                return RX.Observable.fromPromise(Order.findById(id).exec())
+                return RX.Observable.from(Order.findById(id).exec())
                     .switchMap(async order => {
                         if (order == null)
                             return { code: 404, error: 'Order not found' };
@@ -141,10 +141,10 @@ exports.connectUserStream = (id, userId) => {
 // }
 
 exports.getOrdersForRestaurantStream = (userId) => {
-    return RX.Observable.fromPromise(Restaurant.findOne({ user: userId }).exec())
+    return RX.Observable.from(Restaurant.findOne({ user: userId }).exec())
         .mergeMap(restaurant => {
             if (restaurant) {
-                return RX.Observable.fromPromise(Order.find({ restaurant: userId }).exec())
+                return RX.Observable.from(Order.find({ restaurant: userId }).exec())
                     .flatMap(order => RX.Observable.from(order))
                     .filter(order => order.status === statuses.inprogress || order.status === statuses.ready)
                     .toArray();
@@ -155,12 +155,12 @@ exports.getOrdersForRestaurantStream = (userId) => {
 }
 
 exports.getOrdersForRestaurantEagerly = (userId) => {
-    return RX.Observable.fromPromise(Restaurant.findOne({ user: userId }).exec())
+    return RX.Observable.from(Restaurant.findOne({ user: userId }).exec())
         .mergeMap(restaurant => {
             if (restaurant) {
-                return RX.Observable.fromPromise(Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } }).exec())
+                return RX.Observable.from(Order.find({ restaurant: userId, status: { "$in": [statuses.inprogress, statuses.ready] } }).exec())
                     .flatMap(order => RX.Observable.from(order))
-                    .mergeMap(order => RX.Observable.forkJoin(RX.Observable.fromPromise(userService.getUser(order.user)),
+                    .mergeMap(order => RX.Observable.forkJoin(RX.Observable.from(userService.getUser(order.user)),
                     user => {
                         if(user)
                             user.password = undefined;

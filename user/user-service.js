@@ -21,11 +21,11 @@ exports.addUser = (user) => {
 
 exports.addUserStream = (user) => {
     if (user.password) {
-        return RX.Observable.fromPromise(hashService.hash(user.password))
+        return RX.Observable.from(hashService.hash(user.password))
             .mergeMap(hashedPassword => {
                 user.password = hashedPassword;
 
-                return RX.Observable.fromPromise(User.create(user));
+                return RX.Observable.from(User.create(user));
             })
             .catch(error => {
                 if (error.message.includes('is required')) {
@@ -62,7 +62,7 @@ exports.getUser = (id) => {
 // }
 
 exports.getUserByEmailStream = (email) => {
-    return RX.Observable.fromPromise(User.findOne({ email: email }).exec())
+    return RX.Observable.from(User.findOne({ email: email }).exec())
         .switchMap(user => {
             if (user === null)
                 throw new HttpError(404, 'User not found');
@@ -99,7 +99,7 @@ exports.updateTokenStream = (id, newToken) => {
     if (newToken === null || newToken === undefined)
         return RX.Observable.throw(new HttpError(400, 'New token cannot be null'));
 
-    return RX.Observable.fromPromise(User.findOneAndUpdate({ _id: id }, { token: newToken }).exec())
+    return RX.Observable.from(User.findOneAndUpdate({ _id: id }, { token: newToken }).exec())
         .map(user => {
             if (user === null)
                 throw new HttpError(404, 'User not found');

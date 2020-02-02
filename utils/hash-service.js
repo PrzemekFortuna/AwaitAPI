@@ -13,7 +13,7 @@ exports.hash = (value) => {
 }
 
 // exports.hashStream = (value) => {
-//     return RX.Observable.fromPromise(bcrypt.hash(value, 10));
+//     return RX.Observable.from(bcrypt.hash(value, 10));
 // }
 
 // exports.compare = (value, hashedValue) => {
@@ -28,5 +28,5 @@ exports.hash = (value) => {
 // }
 
 exports.compareStream = (value, hashedValue) => {
-    return RX.Observable.fromPromise(bcrypt.compare(value, hashedValue));
+    return RX.Observable.from(bcrypt.compare(value, hashedValue));
 }
