@@ -6,6 +6,7 @@ const orderService = require('./order-service');
 const statuses = require('./order-statuses');
 const authService = require('../auth/auth-service');
 const Order = require('./order');
+const HttpError = require('../utils/http-error');
 
 
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -81,11 +82,13 @@ router.get('/:id', authService.allowRestaurant, (req, res) => {
     let resp = orderService.getOrdersForRestaurantStream(req.params.id);
     resp.subscribe(
         data => {
-            if (!data.error) {
-                res.status(200).send(data);
-            } else {
-                res.status(data.code).send(data);
-            }
+            return res.status(200).send(data);
+        },
+        error => {
+            if (error instanceof HttpError)
+                return res.status(error.code).send({ error: error.message });
+
+            return res.status(500).send(error);
         });
 });
 

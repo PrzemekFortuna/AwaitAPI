@@ -6,6 +6,7 @@ const numberService = require('../number-generator/number-generator-service');
 const Restaurant = require('../restaurant/restaurant');
 const notificationService = require('../notifications/notifications-service');
 const RX = require('rxjs');
+const HttpError = require('../utils/http-error');
 
 // exports.createOrder = (order) => {
 //     return new Promise(async (resolve, reject) => {
@@ -149,7 +150,7 @@ exports.getOrdersForRestaurantStream = (userId) => {
                     .filter(order => order.status === statuses.inprogress || order.status === statuses.ready)
                     .toArray();
             } else {
-                return RX.Observable.of({ code: 400, error: 'Restaurant not found' });
+                throw new HttpError(400, 'Restaurant not found');
             }
         });
 }
