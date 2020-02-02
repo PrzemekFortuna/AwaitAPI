@@ -1,5 +1,5 @@
 const Order = require('./order');
-const mongoose = require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 let streams = [];
 
@@ -12,7 +12,7 @@ exports.connect = (restaurantId, socketServer) => {
     } else {
         let pipeline = [
             { $match: { operationType: 'insert' } },
-            { $match: { "fullDocument.restaurant": mongoose.Types.ObjectId(restaurantId) } }
+            { $match: { "fullDocument.restaurant": ObjectId(restaurantId) } }
         ];
 
         let changeStream = Order.watch(pipeline).on('change', data => {
