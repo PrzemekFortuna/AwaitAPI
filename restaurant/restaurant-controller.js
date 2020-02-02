@@ -9,18 +9,6 @@ const HttpError = require('../utils/http-error');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-// router.post('/register', async (req, res) => {
-//     try {
-//         let restaurantDTO = req.body;
-//         restaurantDTO.role = roles.restaurant;
-
-//         let createdRestaurant = await restaurantService.createRestaurant(restaurantDTO);
-//         res.status(201).send(createdRestaurant);
-//     } catch (error) {
-//         res.status(500).send(error);
-//     }
-// });
-
 router.post('/register', (req, res) => {
     let restaurantDTO = req.body;
 

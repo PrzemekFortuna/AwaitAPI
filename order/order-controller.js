@@ -12,20 +12,6 @@ const HttpError = require('../utils/http-error');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-
-// router.post('/', authService.allowRestaurant, async (req, res) => {
-//     try {
-//         if (req.body.restaurant === undefined)
-//             return res.status(400).send({ error: 'No restaurant id provided' });
-
-//         let newOrder = await orderService.createOrder(req.body);
-
-//         res.status(201).send(newOrder);
-//     } catch (error) {
-//         res.status(500).send(error);
-//     }
-// });
-
 router.post('/', authService.allowRestaurant, (req, res) => {
     try {
         if (req.body.restaurant === undefined) {
@@ -42,18 +28,6 @@ router.post('/', authService.allowRestaurant, (req, res) => {
     }
 });
 
-// router.patch('/:id', authService.allowRestaurant, async (req, res) => {
-//     try {
-//         if (Object.values(statuses).indexOf(req.body.status) == -1)
-//             return res.status(400).send({ error: 'ValidationError: Status out of allowed range' });
-
-//         let modifiedOrder = await orderService.changeStatus(req.params.id, req.body.status);
-//         res.status(200).send(modifiedOrder);
-//     } catch (error) {
-//         res.status(500).send({ error: error });
-//     }
-// });
-
 router.patch('/:id', authService.allowRestaurant, (req, res) => {
     try {
         if (Object.values(statuses).indexOf(req.body.status) == -1)
@@ -68,16 +42,6 @@ router.patch('/:id', authService.allowRestaurant, (req, res) => {
     }
 });
 
-// router.get('/:id', authService.allowRestaurant, async (req, res) => {
-//     try {
-//         let orders = await orderService.getOrdersForRestaurant(req.params.id);
-
-//         res.status(200).send(orders);
-//     } catch (error) {
-//         res.status(500).send({ error: error });
-//     }
-// });
-
 router.get('/:id', authService.allowRestaurant, (req, res) => {
     let resp = orderService.getOrdersForRestaurantStream(req.params.id);
     resp.subscribe(
@@ -91,19 +55,6 @@ router.get('/:id', authService.allowRestaurant, (req, res) => {
             return res.status(500).send(error);
         });
 });
-
-// router.patch('/connect/:id', authService.allowRestaurant, async (req, res) => {
-//     try {
-//         let id = req.params.id;
-//         let userID = req.body.user;
-
-//         await orderService.connectUser(id, userID);
-
-//         res.status(204).send({});
-//     } catch (err) {
-//         res.status(err.code).send(err);
-//     }
-// });
 
 router.patch('/connect/:id', authService.allowRestaurant, (req, res) => {
     try {
@@ -133,5 +84,6 @@ router.get('/eager/:id', async (req, res) => {
                 res.status(data.code).send(data);
             }
         });
-})
+});
+
 module.exports = router;

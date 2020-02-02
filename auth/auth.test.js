@@ -1,5 +1,4 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
 let User = require('../user/user');
 
 let server;

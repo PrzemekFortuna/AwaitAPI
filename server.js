@@ -9,23 +9,6 @@ const authService = require('./auth/auth-service');
 const roles = require('./user/roles');
 const socketService = require('./order/socket');
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
-
-//socket
-
-// io.use((socket, next) => {
-//     let jwt = socket.handshake.headers['authorization'];
-
-//     authService.verifyJWT([roles.restaurant], jwt)
-//         .then(() => {
-//             next();
-//         })
-//         .catch(() => {
-//             next(new Error('Authorization failed!'))
-//         });
-// });
 
 io.on('connection', socket => {
     let id = socket.handshake.query.id;

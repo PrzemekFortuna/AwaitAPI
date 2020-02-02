@@ -12,21 +12,6 @@ exports.hash = (value) => {
     });
 }
 
-// exports.hashStream = (value) => {
-//     return RX.Observable.from(bcrypt.hash(value, 10));
-// }
-
-// exports.compare = (value, hashedValue) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let result = await bcrypt.compare(value, hashedValue);
-//             resolve(result);
-//         } catch(error) {
-//             reject(error);
-//         }
-//     });
-// }
-
 exports.compareStream = (value, hashedValue) => {
     return RX.Observable.from(bcrypt.compare(value, hashedValue));
 }

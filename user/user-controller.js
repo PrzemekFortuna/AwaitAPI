@@ -8,21 +8,6 @@ const roles = require('./roles');
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-// router.post('/register', async (req, res) => {
-//     try {
-//         let userDTO = req.body;
-//         userDTO.role = roles.customer;
-
-//         let newUser = await userService.addUser(userDTO);
-//         newUser.password = undefined;
-//         res.status(201).send(newUser);
-//     } catch (error) {
-//         if (error.includes('is required'))
-//             return res.status(400).send({ error: error });
-//         res.status(500).send({ error: error });
-//     }
-// });
-
 router.post('/register', (req, res) => {
     let userDTO = req.body;
     userDTO.role = roles.customer;
@@ -53,18 +38,6 @@ router.get('/:id', authService.allowAll, async (req, res) => {
         res.status(500).send({ error: error });
     }
 });
-
-// router.patch('/:id', authService.allowAll, async (req, res) => {
-//     try {
-//         let id = req.params.id;
-//         let token = req.body.token;
-
-//         await userService.updateToken(id, token);
-//         res.status(204).send();
-//     } catch (error) {
-//         res.status(500).send({ error: error });
-//     }
-// });
 
 router.patch('/:id', authService.allowAll, (req, res) => {
     let id = req.params.id;

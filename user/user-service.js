@@ -50,17 +50,6 @@ exports.getUser = (id) => {
     });
 }
 
-// exports.getUserByEmail = (email) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let user = await User.findOne({ email: email });
-//             resolve(user);
-//         } catch (error) {
-//             reject(error);
-//         }
-//     });
-// }
-
 exports.getUserByEmailStream = (email) => {
     return RX.Observable.from(User.findOne({ email: email }).exec())
         .switchMap(user => {
@@ -76,24 +65,6 @@ exports.getUserByEmailStream = (email) => {
             throw new HttpError(500, error);
         });
 }
-
-// exports.updateToken = (id, newToken) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let user = await User.findOneAndUpdate({ _id: id }, { token: newToken });
-
-//             if (newToken === null)
-//                 reject({ code: 400, error: 'New token cannot be null' });
-
-//             if (user === null)
-//                 reject({ code: 404, error: 'User not found' });
-
-//             resolve();
-//         } catch (error) {
-//             reject({ code: 500, error: error });
-//         }
-//     });
-// }
 
 exports.updateTokenStream = (id, newToken) => {
     if (newToken === null || newToken === undefined)
