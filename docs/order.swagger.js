@@ -37,7 +37,7 @@
  * 
  * /orders/:id:
  *  get:
- *      description: x Gets all active orders for restaurant with given id
+ *      description: Gets all active orders for restaurant with given id
  *      produces:
  *          - application/json
  *      tags:
@@ -51,6 +51,8 @@
  *      responses:
  *          200:
  *              description: Lists active orders for restaurant
+ *          400:
+ *              description: Restaurant not found
  */
 
 /**
@@ -58,7 +60,7 @@
  * 
  * /orders/eager/:id:
  *  get:
- *      description: x (EAGER LOADING) Gets all active orders for restaurant with given id
+ *      description: (EAGER LOADING) Gets all active orders for restaurant with given id
  *      produces:
  *          - application/json
  *      tags:
@@ -72,14 +74,16 @@
  *      responses:
  *          200:
  *              description: Lists active orders for restaurant with users objects included
+ *          400:
+ *              description: Restaurant not found
 */
 
 /**
  * @swagger
  * 
- * /orders/socket/:id:
+ * WS /orders/socket/connect/socket.io:
  *  get:
- *      description: x (EAGER LOADING) Gets all active orders for restaurant with given id
+ *      description: (WebSocket) Allows restaurant to receive new orders in real-time
  *      produces:
  *          - application/json
  *      tags:
@@ -87,12 +91,9 @@
  *      parameters:
  *          - name: id
  *            description: Id of restaurant
- *            in: path
+ *            in: query
  *            required: true
  *            type: string
- *      responses:
- *          200:
- *              description: Lists active orders for restaurant with users objects included
 */
 
 /**

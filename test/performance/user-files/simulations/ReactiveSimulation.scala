@@ -81,8 +81,8 @@ class ReactiveSimulation extends Simulation {
     )
 
 
-  setUp(scn.inject(atOnceUsers(50))).protocols(httpProtocol)
-  //setUp(scn.inject( rampUsersPerSec(5) to 30 during(15 seconds))).protocols(httpProtocol)
+  //setUp(scn.inject(atOnceUsers(50))).protocols(httpProtocol)
+  setUp(scn.inject( rampUsersPerSec(10) to 50 during(55 seconds))).protocols(httpProtocol)
 
   def newEmail(): String = RandomString.getInstance().randomAlpha(10)+"@test.pl"
 }
